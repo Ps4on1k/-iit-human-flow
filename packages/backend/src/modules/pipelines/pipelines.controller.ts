@@ -53,11 +53,11 @@ export class PipelinesController {
     return this.pipelinesService.addStage(id, body.name, body.code, body.color);
   }
 
-  @Put(':id/stages/reorder')
+  @Put(':pipelineId/stages/reorder')
   @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Reorder stages (Admin only)' })
-  reorderStages(@Param('id') id: string, @Body('stageIds') stageIds: string[]) {
-    return this.pipelinesService.reorderStages(id, stageIds);
+  reorderStages(@Param('pipelineId') pipelineId: string, @Body('stageIds') stageIds: string[]) {
+    return this.pipelinesService.reorderStages(pipelineId, stageIds);
   }
 
   @Patch('stages/:stageId')

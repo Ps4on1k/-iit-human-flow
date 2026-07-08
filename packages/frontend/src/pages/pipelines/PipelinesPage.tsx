@@ -108,19 +108,21 @@ export function PipelinesPage() {
 
   const handleMoveStage = async (stageId: string, direction: 'up' | 'down') => {
     if (!selectedPipeline) return;
-    const stages = [...selectedPipeline.stages].sort((a: any, b: any) => a.order - b.order);
-    const idx = stages.findIndex((s: any) => s.id === stageId);
+    const sorted = [...selectedPipeline.stages].sort((a: any, b: any) => a.sortOrder - b.sortOrder);
+    const idx = sorted.findIndex((s: any) => s.id === stageId);
     if (idx === -1) return;
     if (direction === 'up' && idx === 0) return;
-    if (direction === 'down' && idx === stages.length - 1) return;
+    if (direction === 'down' && idx === sorted.length - 1) return;
     const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
-    const temp = stages[idx].order;
-    stages[idx].order = stages[swapIdx].order;
-    stages[swapIdx].order = temp;
-    const stageIds = stages.map((s: any) => s.id);
-    await pipelinesApi.reorderStages(selectedPipeline.id, stageIds);
-    const { data } = await pipelinesApi.get(selectedPipeline.id);
-    setSelectedPipeline(data);
+    [sorted[idx], sorted[swapIdx]] = [sorted[swapIdx], sorted[idx]];
+    const stageIds = sorted.map((s: any) => s.id);
+    try {
+      await pipelinesApi.reorderStages(selectedPipeline.id, stageIds);
+      const { data } = await pipelinesApi.get(selectedPipeline.id);
+      setSelectedPipeline(data);
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Ошибка');
+    }
   };
 
   return (
@@ -157,7 +159,7 @@ export function PipelinesPage() {
           }
         >
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {pipeline.stages?.sort((a: any, b: any) => a.order - b.order).map((stage: any) => (
+            {pipeline.stages?.sort((a: any, b: any) => a.sortOrder - b.sortOrder).map((stage: any) => (
               <Tag
                 key={stage.id}
                 color={stage.color || 'default'}
@@ -224,14 +226,13 @@ export function PipelinesPage() {
         <Divider style={{ margin: '12px 0' }} />
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {selectedPipeline?.stages?.sort((a: any, b: any) => a.order - b.order).map((stage: any, idx: number) => (
+          {selectedPipeline?.stages?.sort((a: any, b: any) => a.sortOrder - b.sortOrder).map((stage: any, idx: number) => (
             <div key={stage.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', border: '1px solid #EEF1F4', borderRadius: 2 }}>
               <div style={{ width: 12, height: 12, borderRadius: 2, background: stage.color || '#3A8DFF', flexShrink: 0 }} />
               <span style={{ fontWeight: 600, fontSize: 13, flex: 1 }}>{stage.name}</span>
-              <span style={{ fontFamily: 'monospace', fontSize: 11, color: '#8A94A6' }}>{stage.code}</span>
               <Space size={4}>
                 <Button type="text" size="small" icon={<ArrowUpOutlined />} disabled={idx === 0} onClick={() => handleMoveStage(stage.id, 'up')} />
-                <Button type="text" size="small" icon={<ArrowDownOutlined />} disabled={idx === selectedPipeline.stages.length - 1} onClick={() => handleMoveStage(stage.id, 'down')} />
+                <Button type="text" size="small" icon={<ArrowDownOutlined />} disabled={idx === ((selectedPipeline.stages as any[])?.length || 0) - 1} onClick={() => handleMoveStage(stage.id, 'down')} />
                 <Button type="text" size="small" icon={<EditOutlined />} onClick={() => openStageForm(stage)} />
                 <Popconfirm title="Удалить стадию?" onConfirm={() => handleStageDelete(stage.id)}>
                   <Button type="text" danger size="small" icon={<DeleteOutlined />} />
