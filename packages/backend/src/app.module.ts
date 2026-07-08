@@ -19,6 +19,7 @@ import { PipelinesModule } from './modules/pipelines/pipelines.module';
 import { SourcesModule } from './modules/sources/sources.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { ActivityLogModule } from './modules/activity-log/activity-log.module';
+import { VotingModule } from './modules/voting/voting.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ActivityLogModule } from './modules/activity-log/activity-log.module';
     SourcesModule,
     TagsModule,
     ActivityLogModule,
+    VotingModule,
   ],
 })
 export class AppModule {}

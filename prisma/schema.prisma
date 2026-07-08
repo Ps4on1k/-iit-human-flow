@@ -81,6 +81,22 @@ model CandidateNote {
   @@map("candidate_notes")
 }
 
+model InterviewVote {
+  id          String   @id @default(uuid())
+  candidateId String   @map("candidate_id")
+  userId      String   @map("user_id")
+  vote        String   // for, against, neutral
+  comment     String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@unique([candidateId, userId])
+  @@map("interview_votes")
+}
+
 model ActivityLog {
   id          String   @id @default(uuid())
   candidateId String   @map("candidate_id")
@@ -217,6 +233,7 @@ model User {
   interviews           Interview[]
   backgroundChecks     BackgroundCheck[]
   comments             Comment[]
+  interviewVotes       InterviewVote[]
   notifications        Notification[]
   assignedOnboardings  Onboarding[]       @relation("OnboardingAssignee")
   onboardingsAsUser    Onboarding[]
@@ -338,6 +355,7 @@ model Candidate {
   attachments       Attachment[]       @relation("CandidateAttachment")
   comments          Comment[]
   notes             CandidateNote[]
+  votes             InterviewVote[]
   activityLogs      ActivityLog[]
   statusHistory     StatusHistory[]
 

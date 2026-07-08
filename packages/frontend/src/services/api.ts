@@ -112,6 +112,22 @@ export const notificationsApi = {
   markAllRead: () => api.patch('/notifications/read-all'),
 };
 
+// Voting API
+export const votingApi = {
+  vote: (candidateId: string, vote: string, comment?: string) =>
+    api.post(`/voting/${candidateId}`, { vote, comment }),
+  getVotes: (candidateId: string) =>
+    api.get(`/voting/${candidateId}`),
+  getSummary: (candidateId: string) =>
+    api.get(`/voting/${candidateId}/summary`),
+};
+
+// Download helper
+export const downloadFile = async (attachmentId: string) => {
+  const response = await api.get(`/candidates/download/${attachmentId}`, { responseType: 'blob' });
+  return response;
+};
+
 // Dashboard API
 export const dashboardApi = {
   stats: () => api.get('/dashboard/stats'),

@@ -37,6 +37,7 @@ export class CandidatesService {
         statusHistory: { include: { changer: { select: { id: true, firstName: true, lastName: true } } }, orderBy: { createdAt: 'desc' } },
         activityLogs: { include: { user: { select: { id: true, firstName: true, lastName: true } } }, orderBy: { createdAt: 'desc' } },
         notes: { include: { author: { select: { id: true, firstName: true, lastName: true } } }, orderBy: { createdAt: 'desc' } },
+        votes: { include: { user: { select: { id: true, firstName: true, lastName: true } } }, orderBy: { createdAt: 'desc' } },
       },
     });
     if (!candidate) throw new NotFoundException('Candidate not found');
