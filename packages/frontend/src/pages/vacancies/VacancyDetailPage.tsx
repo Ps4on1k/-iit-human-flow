@@ -152,10 +152,10 @@ export function VacancyDetailPage() {
         </Descriptions>
       </Card>
 
-      {/* Vertical Kanban */}
-      <Card title={`Канбан-доска (${candidates.length} кандидатов)`} style={{ marginTop: 16 }}>
+      {/* Vertical Pipeline / Флоу найма */}
+      <Card title={`Флоу найма (${candidates.length} кандидатов)`} style={{ marginTop: 16 }}>
         <Collapse
-          defaultActiveKey={stages.map((s) => s.code)}
+          defaultActiveKey={stages.filter((s) => candidates.some((c) => c.status === s.code)).map((s) => s.code)}
           items={stages.map((stage) => {
             const stageCandidates = getCandidatesByStage(stage.code);
             return {

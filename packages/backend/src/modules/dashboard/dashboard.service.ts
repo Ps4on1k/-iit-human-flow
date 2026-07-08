@@ -33,12 +33,26 @@ export class DashboardService {
   }
 
   async getFunnel() {
+    // Resolve stage codes to display names from pipeline stages
+    const stages = await this.prisma.pipelineStage.findMany({
+      select: { code: true, name: true, color: true },
+    });
+    const stageMap: Record<string, { name: string; color: string }> = {};
+    for (const s of stages) {
+      stageMap[s.code] = { name: s.name, color: s.color || '#3A8DFF' };
+    }
+
     const candidates = await this.prisma.candidate.groupBy({
       by: ['status'],
       _count: { id: true },
     });
 
-    return candidates.map((c) => ({ status: c.status, count: c._count.id }));
+    return candidates.map((c) => ({
+      status: c.status,
+      name: stageMap[c.status]?.name || c.status,
+      color: stageMap[c.status]?.color || '#8A94A6',
+      count: c._count.id,
+    }));
   }
 
   async getPipelineFunnels() {

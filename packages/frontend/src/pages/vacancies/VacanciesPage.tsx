@@ -116,6 +116,19 @@ export function VacanciesPage() {
       render: (_: any, record: any) => record._count?.candidates || 0,
     },
     {
+      title: 'Теги',
+      key: 'tags',
+      render: (_: any, record: any) => (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          {record.tags?.map((vt: any) => (
+            <Tag key={vt.tag?.id} color={vt.tag?.color || '#3A8DFF'} style={{ borderRadius: 2, fontSize: 10 }}>
+              {vt.tag?.name}
+            </Tag>
+          ))}
+        </div>
+      ),
+    },
+    {
       title: 'Создатель',
       key: 'creator',
       render: (_: any, record: any) => record.creator ? `${record.creator.firstName} ${record.creator.lastName}` : '—',

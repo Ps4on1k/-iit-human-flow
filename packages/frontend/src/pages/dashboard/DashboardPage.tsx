@@ -98,7 +98,7 @@ export function DashboardPage() {
               <Card size="small" style={{ textAlign: 'center' }}>
                 <Statistic value={item.count} valueStyle={{ fontSize: 20, color: item.count > 0 ? '#3A8DFF' : undefined }} />
                 <Text style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8A94A6' }}>
-                  {item.status}
+                  {item.name}
                 </Text>
               </Card>
             </Col>

@@ -32,7 +32,18 @@ export function UsersPage() {
     setLoading(true);
     try {
       const { data } = await api.get('/users');
-      setUsers(data);
+      // Load tags for each user
+      const usersWithTags = await Promise.all(
+        data.map(async (u: any) => {
+          try {
+            const { data: tags } = await tagsApi.getUserTags(u.id);
+            return { ...u, userTags: tags };
+          } catch {
+            return { ...u, userTags: [] };
+          }
+        })
+      );
+      setUsers(usersWithTags);
     } finally {
       setLoading(false);
     }
@@ -116,6 +127,22 @@ export function UsersPage() {
           {active ? 'Активен' : 'Неактивен'}
         </Tag>
       ),
+    },
+    {
+      title: 'Теги',
+      key: 'tags',
+      render: (_: any, record: any) => {
+        const userTags = record.userTags?.map((ut: any) => ut.tag) || [];
+        return (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {userTags.map((tag: any) => (
+              <Tag key={tag.id} color={tag.color || '#3A8DFF'} style={{ borderRadius: 2, fontSize: 10 }}>
+                {tag.name}
+              </Tag>
+            ))}
+          </div>
+        );
+      },
     },
     {
       title: 'Дата создания',
