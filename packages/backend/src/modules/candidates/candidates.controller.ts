@@ -12,7 +12,11 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 const uploadStorage = diskStorage({
   destination: './uploads',
-  filename: (req, file, cb) => cb(null, `${randomUUID()}${path.extname(file.originalname)}`),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const baseName = Buffer.from(path.basename(file.originalname, ext), 'latin1').toString('utf8');
+    cb(null, `${randomUUID()}-${baseName}${ext}`);
+  },
 });
 
 @ApiTags('Candidates')

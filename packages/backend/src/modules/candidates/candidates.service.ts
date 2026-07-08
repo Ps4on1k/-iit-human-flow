@@ -83,7 +83,7 @@ export class CandidatesService {
         candidateId: id,
         userId,
         action: 'status_change',
-        details: JSON.stringify({ from: candidate.status, to: status }),
+        details: `Статус изменён: «${candidate.status}» → «${status}»`,
       },
     });
 
@@ -129,7 +129,7 @@ export class CandidatesService {
         candidateId,
         userId: authorId,
         action: 'note',
-        details: content.substring(0, 200),
+        details: `Добавлена заметка: «${content.substring(0, 100)}»`,
         context,
       },
     });
@@ -157,24 +157,42 @@ export class CandidatesService {
   }
 
   async uploadAttachment(candidateId: string, uploadedBy: string, file: { filename: string; originalname: string; mimetype: string; size: number; path: string }, context?: string) {
-    const attachment = await this.prisma.attachment.create({
-      data: {
-        candidateId,
-        uploadedBy,
-        filename: file.filename,
-        originalName: file.originalname,
-        mimeType: file.mimetype,
-        size: file.size,
-        path: file.path,
-      },
-    });
+    const data: any = {
+      candidateId,
+      uploadedBy,
+      filename: file.filename,
+      originalName: file.originalname,
+      mimeType: file.mimetype,
+      size: file.size,
+      path: file.path,
+    };
+
+    // Link to context entity if exists
+    if (context && context !== 'general') {
+      if (context === 'interview') {
+        const interview = await this.prisma.interview.findFirst({ where: { candidateId }, orderBy: { createdAt: 'desc' } });
+        if (interview) data.interviewId = interview.id;
+      } else if (context === 'background_check') {
+        const bg = await this.prisma.backgroundCheck.findFirst({ where: { candidateId }, orderBy: { createdAt: 'desc' } });
+        if (bg) data.backgroundCheckId = bg.id;
+      } else if (context === 'offer') {
+        const offer = await this.prisma.offer.findFirst({ where: { candidateId }, orderBy: { createdAt: 'desc' } });
+        if (offer) data.offerId = offer.id;
+      }
+    }
+
+    const attachment = await this.prisma.attachment.create({ data });
+
+    const contextLabels: Record<string, string> = {
+      general: 'Общее', interview: 'Собеседование', background_check: 'Проверка СБ', offer: 'Оффер',
+    };
 
     await this.prisma.activityLog.create({
       data: {
         candidateId,
         userId: uploadedBy,
         action: 'file_upload',
-        details: JSON.stringify({ filename: file.originalname, size: file.size }),
+        details: `Загружен файл «${file.originalname}» (${(file.size / 1024).toFixed(1)} KB) в раздел «${contextLabels[context || 'general']}»`,
         context: context || 'general',
       },
     });
