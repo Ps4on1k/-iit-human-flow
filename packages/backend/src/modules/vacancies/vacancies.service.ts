@@ -93,4 +93,16 @@ export class VacanciesService {
       data: { status },
     });
   }
+
+  async setTags(id: string, tagIds: string[]) {
+    const vacancy = await this.prisma.vacancy.findUnique({ where: { id } });
+    if (!vacancy) throw new NotFoundException('Vacancy not found');
+    await this.prisma.vacancyTag.deleteMany({ where: { vacancyId: id } });
+    if (tagIds.length > 0) {
+      await this.prisma.vacancyTag.createMany({
+        data: tagIds.map((tagId) => ({ vacancyId: id, tagId })),
+      });
+    }
+    return { success: true };
+  }
 }

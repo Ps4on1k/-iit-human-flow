@@ -1,7 +1,7 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Tag, Descriptions, Button, Tabs, Timeline, Form, Input, Upload, List, Typography, Divider, Select, message } from 'antd';
-import { ArrowLeftOutlined, UploadOutlined, DeleteOutlined, FileOutlined } from '@ant-design/icons';
+import { Card, Tag, Descriptions, Button, Tabs, Timeline, Form, Input, Upload, List, Typography, Divider, Select, Row, Col, Modal, message } from 'antd';
+import { ArrowLeftOutlined, UploadOutlined, DeleteOutlined, FileOutlined, EditOutlined } from '@ant-design/icons';
 import { candidatesApi, pipelinesApi } from '@/services/api';
 import api from '@/services/api';
 
@@ -19,6 +19,9 @@ export function CandidateDetailPage() {
   const [loading, setLoading] = useState(true);
   const [noteForm] = Form.useForm();
   const [noteContext, setNoteContext] = useState('general');
+  const [editMode, setEditMode] = useState(false);
+  const [editForm] = Form.useForm();
+  const timelineRef = useRef<HTMLDivElement>(null);
 
   const load = async () => {
     if (!id) return;
@@ -27,14 +30,12 @@ export function CandidateDetailPage() {
       setCandidate(c.data);
       setNotes(c.data.notes || []);
       setActivityLog(c.data.activityLogs || []);
-
       if (c.data.vacancy?.pipelineId) {
         try {
           const { data: pipeline } = await pipelinesApi.get(c.data.vacancy.pipelineId);
           setStages(pipeline.stages.sort((a: any, b: any) => a.sortOrder - b.sortOrder));
         } catch { loadDefaultStages(); }
       } else { loadDefaultStages(); }
-
       loadAttachments();
     } finally { setLoading(false); }
   };
@@ -52,19 +53,48 @@ export function CandidateDetailPage() {
 
   const loadAttachments = useCallback(async () => {
     if (!id) return;
-    try {
-      const { data } = await api.get(`/candidates/${id}/attachments`);
-      setAttachments(data);
-    } catch {}
+    try { const { data } = await api.get(`/candidates/${id}/attachments`); setAttachments(data); } catch {}
   }, [id]);
 
   useEffect(() => { load(); }, [id]);
+
+  // Scroll timeline to the right (to show last status)
+  useEffect(() => {
+    if (timelineRef.current) {
+      timelineRef.current.scrollLeft = timelineRef.current.scrollWidth;
+    }
+  }, [candidate?.status, stages]);
 
   const handleStatusChange = async (status: string) => {
     if (!id) return;
     await candidatesApi.updateStatus(id, status);
     message.success('Статус обновлён');
     load();
+  };
+
+  const openEdit = () => {
+    editForm.setFieldsValue({
+      firstName: candidate.firstName,
+      lastName: candidate.lastName,
+      email: candidate.email,
+      phone: candidate.phone,
+      source: candidate.source,
+      currentCompany: candidate.currentCompany,
+      experienceYears: candidate.experienceYears,
+    });
+    setEditMode(true);
+  };
+
+  const handleEditSave = async (values: any) => {
+    if (!id) return;
+    try {
+      await candidatesApi.update(id, values);
+      message.success('Кандидат обновлён');
+      setEditMode(false);
+      load();
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Ошибка');
+    }
   };
 
   const handleAddNote = async (values: { content: string }) => {
@@ -79,9 +109,7 @@ export function CandidateDetailPage() {
     const formData = new FormData();
     formData.append('file', info.file);
     formData.append('context', context);
-    await api.post(`/candidates/${id}/attachments`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    await api.post(`/candidates/${id}/attachments`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     loadAttachments();
     load();
   };
@@ -132,92 +160,85 @@ export function CandidateDetailPage() {
         <Upload customRequest={(info) => handleUpload(info, ctx)} showUploadList={false}>
           <Button icon={<UploadOutlined />}>Загрузить файл</Button>
         </Upload>
-        <List
-          size="small"
-          style={{ marginTop: 8 }}
-          dataSource={files}
-          renderItem={(file: any) => (
-            <List.Item actions={[
-              <Button type="text" danger size="small" icon={<DeleteOutlined />}
-                onClick={() => handleDeleteAttachment(file.id)} />,
-            ]}>
-              <List.Item.Meta
-                avatar={<FileOutlined />}
-                title={file.originalName}
-                description={`${(file.size / 1024).toFixed(1)} KB · ${file.uploader?.firstName} ${file.uploader?.lastName}`}
-              />
-            </List.Item>
-          )}
-        />
+        <List size="small" style={{ marginTop: 8 }} dataSource={files} renderItem={(file: any) => (
+          <List.Item actions={[
+            <Button type="text" danger size="small" icon={<DeleteOutlined />} onClick={() => handleDeleteAttachment(file.id)} />,
+          ]}>
+            <List.Item.Meta avatar={<FileOutlined />} title={file.originalName}
+              description={`${(file.size / 1024).toFixed(1)} KB · ${file.uploader?.firstName} ${file.uploader?.lastName}`} />
+          </List.Item>
+        )} />
       </div>
     );
   };
 
-  const renderNotes = (ctx: string) => {
-    const ctxNotes = getNotesForContext(ctx);
-    return (
-      <List
-        size="small"
-        dataSource={ctxNotes}
-        renderItem={(note: any) => (
-          <List.Item actions={[
-            <Button type="text" danger size="small" icon={<DeleteOutlined />}
-              onClick={() => handleDeleteNote(note.id)} />,
-          ]}>
-            <List.Item.Meta
-              title={<>{note.author?.firstName} {note.author?.lastName} <Text type="secondary">— {new Date(note.createdAt).toLocaleString('ru')}</Text></>}
-              description={note.content}
-            />
-          </List.Item>
-        )}
-      />
-    );
-  };
+  const renderNotes = (ctx: string) => (
+    <List size="small" dataSource={getNotesForContext(ctx)} renderItem={(note: any) => (
+      <List.Item actions={[
+        <Button type="text" danger size="small" icon={<DeleteOutlined />} onClick={() => handleDeleteNote(note.id)} />,
+      ]}>
+        <List.Item.Meta
+          title={<>{note.author?.firstName} {note.author?.lastName} <Text type="secondary">— {new Date(note.createdAt).toLocaleString('ru')}</Text></>}
+          description={note.content} />
+      </List.Item>
+    )} />
+  );
 
-  // Timeline — only file uploads and notes (no status changes as separate items)
-  const timelineItems = activityLog
-    .filter((log) => log.action !== 'status_change')
-    .map((log) => ({
-      color: log.action === 'file_upload' ? 'blue' : 'green',
-      children: (
-        <div>
-          <Text strong>{log.action === 'file_upload' ? '📎 Загружен файл' : '💬 Заметка'}</Text>
-          <br />
-          <Text type="secondary" style={{ fontSize: 12 }}>
-            {log.user?.firstName} {log.user?.lastName} — {new Date(log.createdAt).toLocaleString('ru')}
-          </Text>
-          {log.details && <div style={{ fontSize: 12, color: '#8A94A6', marginTop: 2 }}>{log.details}</div>}
-        </div>
-      ),
-    }));
+  const activityLogItems = activityLog.filter((l) => l.action !== 'status_change').map((log) => ({
+    color: log.action === 'file_upload' ? 'blue' : 'green',
+    children: (
+      <div>
+        <Text strong>{log.action === 'file_upload' ? '📎 Файл' : '💬 Заметка'}</Text>
+        <br />
+        <Text type="secondary" style={{ fontSize: 12 }}>{log.user?.firstName} {log.user?.lastName} — {new Date(log.createdAt).toLocaleString('ru')}</Text>
+        {log.details && <div style={{ fontSize: 12, color: '#8A94A6', marginTop: 2 }}>{log.details}</div>}
+      </div>
+    ),
+  }));
 
   return (
     <div>
-      <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>
-        Назад
-      </Button>
+      <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(-1)} style={{ marginBottom: 16 }}>Назад</Button>
 
       <Card loading={loading}>
-        {/* Status card with meta info */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-          <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Typography.Title level={4} style={{ margin: 0 }}>{candidate.firstName} {candidate.lastName}</Typography.Title>
-            {candidate.email && <Text type="secondary">{candidate.email}</Text>}
+            <Button type="text" icon={<EditOutlined />} size="small" onClick={openEdit} />
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {currentStage && <Tag color={currentStage.color || 'default'}>{currentStage.name}</Tag>}
-            <Select
-              style={{ width: 200 }}
-              value={candidate.status}
-              onChange={handleStatusChange}
-              options={stages.map((s) => ({ value: s.code, label: s.name }))}
-            />
+            <Select style={{ width: 200 }} value={candidate.status} onChange={handleStatusChange}
+              options={stages.map((s) => ({ value: s.code, label: s.name }))} />
           </div>
         </div>
 
+        {candidate.email && <Text type="secondary" style={{ display: 'block', marginBottom: 12 }}>{candidate.email}</Text>}
+
+        {/* Horizontal timeline */}
+        <div ref={timelineRef} style={{ display: 'flex', gap: 0, overflowX: 'auto', paddingBottom: 8, marginBottom: 16, borderBottom: '1px solid #E8EBF0', scrollBehavior: 'smooth' }}>
+          {stages.map((stage, idx) => {
+            const isActive = stage.code === candidate.status;
+            const isPast = stages.findIndex((s) => s.code === candidate.status) > idx;
+            return (
+              <div key={stage.code} style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center' }}>
+                <div style={{
+                  padding: '6px 16px', borderRadius: 2, fontSize: 12, fontWeight: isActive ? 700 : 500,
+                  background: isActive ? stage.color : isPast ? '#E8EBF0' : 'transparent',
+                  color: isActive ? '#fff' : isPast ? '#8A94A6' : '#AEB7C4',
+                  whiteSpace: 'nowrap', transition: 'all 0.2s',
+                }}>
+                  {stage.name}
+                </div>
+                {idx < stages.length - 1 && <div style={{ width: 24, height: 2, background: isPast ? stage.color : '#E8EBF0', flexShrink: 0 }} />}
+              </div>
+            );
+          })}
+        </div>
+
         {lastStatusChange && (
-          <div style={{ padding: '8px 12px', borderRadius: 2, background: 'var(--color-fill-secondary, #F4F5F7)', marginBottom: 16, fontSize: 12, color: '#8A94A6' }}>
-            Последняя смена статуса: <Text strong>{stages.find((s) => s.code === lastStatusChange.toStatus)?.name || lastStatusChange.toStatus}</Text>
+          <div style={{ padding: '6px 12px', borderRadius: 2, background: '#F4F5F7', marginBottom: 16, fontSize: 12, color: '#8A94A6' }}>
+            Статус: <Text strong>{stages.find((s) => s.code === lastStatusChange.toStatus)?.name || lastStatusChange.toStatus}</Text>
             {' — '}{lastStatusChange.changer?.firstName} {lastStatusChange.changer?.lastName}, {new Date(lastStatusChange.createdAt).toLocaleString('ru')}
           </div>
         )}
@@ -227,83 +248,52 @@ export function CandidateDetailPage() {
           <Descriptions.Item label="Источник">{candidate.source}</Descriptions.Item>
           <Descriptions.Item label="Компания">{candidate.currentCompany || '—'}</Descriptions.Item>
           <Descriptions.Item label="Опыт">{candidate.experienceYears ? `${candidate.experienceYears} лет` : '—'}</Descriptions.Item>
-          <Descriptions.Item label="Вакансия">
-            <a onClick={() => navigate(`/vacancies/${candidate.vacancyId}`)}>{candidate.vacancy?.title}</a>
-          </Descriptions.Item>
+          <Descriptions.Item label="Вакансия"><a onClick={() => navigate(`/vacancies/${candidate.vacancyId}`)}>{candidate.vacancy?.title}</a></Descriptions.Item>
           <Descriptions.Item label="Создатель">{candidate.creator?.firstName} {candidate.creator?.lastName}</Descriptions.Item>
         </Descriptions>
       </Card>
 
-      <Tabs
-        defaultActiveKey="timeline"
-        style={{ marginTop: 16 }}
-        items={[
-          {
-            key: 'timeline',
-            label: 'История',
-            children: (
-              <Card>
-                {timelineItems.length > 0 ? <Timeline items={timelineItems} /> : <Text type="secondary">Пока нет действий</Text>}
-              </Card>
-            ),
-          },
-          {
-            key: 'interviews',
-            label: 'Собеседования',
-            children: (
-              <Card>
-                <Typography.Text strong>Файлы</Typography.Text>
-                {renderAttachments('interview')}
-                <Divider />
-                <Typography.Text strong>Заметки</Typography.Text>
-                {renderNoteForm('interview')}
-                {renderNotes('interview')}
-              </Card>
-            ),
-          },
-          {
-            key: 'background',
-            label: 'Проверка СБ',
-            children: (
-              <Card>
-                <Typography.Text strong>Файлы</Typography.Text>
-                {renderAttachments('background_check')}
-                <Divider />
-                <Typography.Text strong>Заметки</Typography.Text>
-                {renderNoteForm('background_check')}
-                {renderNotes('background_check')}
-              </Card>
-            ),
-          },
-          {
-            key: 'offers',
-            label: 'Офферы',
-            children: (
-              <Card>
-                <Typography.Text strong>Файлы</Typography.Text>
-                {renderAttachments('offer')}
-                <Divider />
-                <Typography.Text strong>Заметки</Typography.Text>
-                {renderNoteForm('offer')}
-                {renderNotes('offer')}
-              </Card>
-            ),
-          },
-          {
-            key: 'notes',
-            label: `Заметки (${notes.length})`,
-            children: (
-              <Card>
-                {renderNoteForm('general')}
-                <Divider />
-                {renderAttachments('general')}
-                <Divider />
-                {renderNotes('general')}
-              </Card>
-            ),
-          },
-        ]}
-      />
+      <Tabs defaultActiveKey="timeline" style={{ marginTop: 16 }} items={[
+        {
+          key: 'timeline', label: 'История',
+          children: <Card>{activityLogItems.length > 0 ? <Timeline items={activityLogItems} /> : <Text type="secondary">Пока нет действий</Text>}</Card>,
+        },
+        {
+          key: 'interviews', label: 'Собеседования',
+          children: <Card>{renderNoteForm('interview')}<Divider />{renderAttachments('interview')}<Divider />{renderNotes('interview')}</Card>,
+        },
+        {
+          key: 'background', label: 'Проверка СБ',
+          children: <Card>{renderNoteForm('background_check')}<Divider />{renderAttachments('background_check')}<Divider />{renderNotes('background_check')}</Card>,
+        },
+        {
+          key: 'offers', label: 'Офферы',
+          children: <Card>{renderNoteForm('offer')}<Divider />{renderAttachments('offer')}<Divider />{renderNotes('offer')}</Card>,
+        },
+        {
+          key: 'notes', label: `Заметки (${notes.length})`,
+          children: <Card>{renderNoteForm('general')}<Divider />{renderAttachments('general')}<Divider />{renderNotes('general')}</Card>,
+        },
+      ]} />
+
+      {/* Edit modal */}
+      <Modal title="Редактировать кандидата" open={editMode} onCancel={() => setEditMode(false)} onOk={() => editForm.submit()} okText="Сохранить" cancelText="Отмена">
+        <Form form={editForm} layout="vertical" onFinish={handleEditSave} style={{ marginTop: 16 }}>
+          <Row gutter={16}>
+            <Col span={12}><Form.Item name="firstName" label="Имя" rules={[{ required: true }]}><Input /></Form.Item></Col>
+            <Col span={12}><Form.Item name="lastName" label="Фамилия" rules={[{ required: true }]}><Input /></Form.Item></Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}><Form.Item name="email" label="Email"><Input /></Form.Item></Col>
+            <Col span={12}><Form.Item name="phone" label="Телефон"><Input /></Form.Item></Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}><Form.Item name="source" label="Источник"><Input /></Form.Item></Col>
+            <Col span={12}><Form.Item name="experienceYears" label="Опыт (лет)"><Input type="number" /></Form.Item></Col>
+          </Row>
+          <Form.Item name="currentCompany" label="Компания"><Input /></Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }

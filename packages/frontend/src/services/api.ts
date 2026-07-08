@@ -45,6 +45,8 @@ export const vacanciesApi = {
   update: (id: string, data: any) => api.put(`/vacancies/${id}`, data),
   updateStatus: (id: string, status: string) =>
     api.patch(`/vacancies/${id}/status`, { status }),
+  setTags: (id: string, tagIds: string[]) =>
+    api.patch(`/vacancies/${id}/tags`, { tagIds }),
 };
 
 // Candidates API
@@ -53,6 +55,7 @@ export const candidatesApi = {
     api.get('/candidates', { params: { vacancyId, status } }),
   get: (id: string) => api.get(`/candidates/${id}`),
   create: (data: any) => api.post('/candidates', data),
+  update: (id: string, data: any) => api.put(`/candidates/${id}`, data),
   updateStatus: (id: string, status: string) =>
     api.patch(`/candidates/${id}/status`, { status }),
 };

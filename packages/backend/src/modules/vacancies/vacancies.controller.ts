@@ -4,7 +4,10 @@ import { VacanciesService } from './vacancies.service';
 import { CreateVacancyDto } from './dto/create-vacancy.dto';
 import { UpdateVacancyDto } from './dto/update-vacancy.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { UserRole } from '@prisma/client';
 
 @ApiTags('Vacancies')
 @ApiBearerAuth()
@@ -50,5 +53,12 @@ export class VacanciesController {
   @ApiOperation({ summary: 'Update vacancy status' })
   updateStatus(@Param('id') id: string, @Body('status') status: any) {
     return this.vacanciesService.updateStatus(id, status);
+  }
+
+  @Patch(':id/tags')
+  @Roles(UserRole.ADMIN, UserRole.RECRUITER)
+  @ApiOperation({ summary: 'Set vacancy tags' })
+  setTags(@Param('id') id: string, @Body('tagIds') tagIds: string[]) {
+    return this.vacanciesService.setTags(id, tagIds);
   }
 }

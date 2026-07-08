@@ -36,8 +36,6 @@ const urgencyColors: Record<string, string> = {
   NEW_POSITION: 'green',
 };
 
-const cities = ['Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Казань', 'Нижний Новгород', 'Краснодар', 'Уфа', 'Волгоград', 'Удалённо'];
-
 export function VacanciesPage() {
   const [vacancies, setVacancies] = useState<any[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
@@ -85,9 +83,10 @@ export function VacanciesPage() {
       key: 'department',
     },
     {
-      title: 'Локация',
+      title: 'Формат',
       dataIndex: 'location',
       key: 'location',
+      render: (v: string) => ({ OFFICE: 'Офис', REMOTE: 'Удалённо', HYBRID: 'Гибрид' }[v] || v),
     },
     {
       title: 'Зарплата',
@@ -154,8 +153,12 @@ export function VacanciesPage() {
           <Form.Item name="description" label="Описание" rules={[{ required: true }]}>
             <Input.TextArea rows={3} />
           </Form.Item>
-          <Form.Item name="location" label="Город" rules={[{ required: true }]}>
-            <Select showSearch placeholder="Выберите город" options={cities.map(c => ({ value: c, label: c }))} />
+          <Form.Item name="location" label="Формат работы" rules={[{ required: true }]}>
+            <Select options={[
+              { value: 'OFFICE', label: 'Офис' },
+              { value: 'REMOTE', label: 'Удалённо' },
+              { value: 'HYBRID', label: 'Гибрид' },
+            ]} />
           </Form.Item>
           <Form.Item name="grade" label="Грейд">
             <Select
