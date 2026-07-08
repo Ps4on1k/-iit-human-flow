@@ -71,10 +71,23 @@ export class PipelinesService {
   async reorderStages(pipelineId: string, stageIds: string[]) {
     const pipeline = await this.prisma.pipeline.findUnique({ where: { id: pipelineId } });
     if (!pipeline) throw new NotFoundException('Pipeline not found');
-    const updates = stageIds.map((stageId, index) =>
-      this.prisma.pipelineStage.update({ where: { id: stageId }, data: { sortOrder: index } }),
+
+    const count = stageIds.length;
+
+    // Use high temp values to avoid unique constraint conflicts
+    await this.prisma.$transaction(
+      stageIds.map((stageId, index) =>
+        this.prisma.pipelineStage.update({ where: { id: stageId }, data: { sortOrder: count + index } }),
+      ),
     );
-    await this.prisma.$transaction(updates);
+
+    // Now assign real order
+    await this.prisma.$transaction(
+      stageIds.map((stageId, index) =>
+        this.prisma.pipelineStage.update({ where: { id: stageId }, data: { sortOrder: index } }),
+      ),
+    );
+
     return this.prisma.pipelineStage.findMany({
       where: { pipelineId },
       orderBy: { sortOrder: 'asc' },
