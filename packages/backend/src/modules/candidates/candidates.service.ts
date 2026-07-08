@@ -66,25 +66,31 @@ export class CandidatesService {
 
   async updateStatus(id: string, status: string, userId: string) {
     const candidate = await this.prisma.candidate.findUnique({ where: { id } });
-    if (!candidate) throw new NotFoundException('Candidate not found');
+    if (!candidate) throw new NotFoundException('Кандидат не найден');
 
-    // Validate: candidate can only be "hired" for ONE vacancy
-    if (status === 'hired' && candidate.status !== 'hired') {
-      const alreadyHired = await this.prisma.candidate.findFirst({
-        where: { id: { not: id }, status: 'hired' },
-      });
-      // Actually, since each candidate has a single vacancyId, this check is about
-      // ensuring the same candidate isn't hired elsewhere — but each candidate IS one record.
-      // The constraint is that a candidate record can only be "hired" once, which is already enforced.
-      // We keep this as a safety check.
-    }
+    // Resolve status codes to human-readable names from pipeline stages
+    const pipeline = await this.prisma.pipeline.findFirst({
+      where: { vacancies: { some: { id: candidate.vacancyId } } },
+      include: { stages: true },
+    });
+    const stageMap: Record<string, string> = {};
+    pipeline?.stages?.forEach((s: any) => { stageMap[s.code] = s.name; });
+    stageMap['new'] = 'Новый';
+    stageMap['screening'] = 'Скрининг';
+    stageMap['interview'] = 'Собеседование';
+    stageMap['offer'] = 'Оффер';
+    stageMap['hired'] = 'Нанят';
+    stageMap['rejected'] = 'Отказ';
 
-    const activityLog = await this.prisma.activityLog.create({
+    const fromName = stageMap[candidate.status] || candidate.status;
+    const toName = stageMap[status] || status;
+
+    await this.prisma.activityLog.create({
       data: {
         candidateId: id,
         userId,
         action: 'status_change',
-        details: `Статус изменён: «${candidate.status}» → «${status}»`,
+        details: `Статус изменён: «${fromName}» → «${toName}»`,
       },
     });
 
@@ -156,11 +162,13 @@ export class CandidatesService {
 
   async uploadAttachment(candidateId: string, uploadedBy: string, file: { filename: string; originalname: string; mimetype: string; size: number; path: string }, context?: string) {
     const ctx = context || 'general';
+    // Decode original name from latin1 bytes to UTF-8
+    const decodedName = Buffer.from(file.originalname, 'latin1').toString('utf8');
     const data: any = {
       candidateId,
       uploadedBy,
       filename: file.filename,
-      originalName: file.originalname,
+      originalName: decodedName,
       mimeType: file.mimetype,
       size: file.size,
       path: file.path,
@@ -178,7 +186,7 @@ export class CandidatesService {
         candidateId,
         userId: uploadedBy,
         action: 'file_upload',
-        details: `Загружен файл «${file.originalname}» (${(file.size / 1024).toFixed(1)} KB) в раздел «${contextLabels[ctx]}»`,
+        details: `Загружен файл «${decodedName}» (${(file.size / 1024).toFixed(1)} KB) в раздел «${contextLabels[ctx]}»`,
         context: ctx,
       },
     });

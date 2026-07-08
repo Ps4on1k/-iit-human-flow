@@ -12,7 +12,24 @@ export class VacanciesService {
     const where: any = {};
 
     if (role === UserRole.HIRING_MANAGER) {
-      where.assignments = { some: { userId } };
+      // HIRING_MANAGER sees only vacancies with at least one tag matching their own tags
+      const userTags = await this.prisma.userTagVisibility.findMany({
+        where: { userId },
+        select: { tagId: true },
+      });
+
+      if (userTags.length > 0) {
+        const tagIds = userTags.map((ut) => ut.tagId);
+        where.id = {
+          in: (await this.prisma.vacancyTag.findMany({
+            where: { tagId: { in: tagIds } },
+            select: { vacancyId: true },
+          })).map((vt) => vt.vacancyId),
+        };
+      } else {
+        // No tags assigned to user — show nothing (or all if you prefer)
+        where.id = '__none__';
+      }
     }
     if (departmentId) {
       where.departmentId = departmentId;

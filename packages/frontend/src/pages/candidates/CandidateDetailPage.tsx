@@ -177,10 +177,29 @@ export function CandidateDetailPage() {
     else if (log.action === 'vote') { title = '🗳 Голос'; color = 'purple'; }
     else if (log.action === 'status_change') {
       const details = log.details || '';
-      const match = details.match(/→ «(.+?)»/);
-      title = match ? match[1] : '🔄 Смена статуса';
+      let toName = '';
+      // Try new format: Статус изменён: «old» → «new»
+      const textMatch = details.match(/→ «(.+?)»/);
+      if (textMatch) {
+        toName = textMatch[1];
+      } else {
+        // Try old JSON format: {"from":"code","to":"code"}
+        try {
+          const parsed = JSON.parse(details);
+          if (parsed.to) {
+            // Resolve code to name
+            const stageMatch = stages.find((s) => s.code === parsed.to);
+            toName = stageMatch?.name || parsed.to;
+          }
+        } catch {}
+      }
+      title = toName || '🔄 Смена статуса';
       color = 'orange';
     }
+
+    // Parse file name from details for file_upload entries
+    const fileMatch = log.details?.match(/«(.+?)»/);
+
     return {
       color,
       children: (
@@ -189,6 +208,17 @@ export function CandidateDetailPage() {
           <br />
           <Text type="secondary" style={{ fontSize: 12 }}>{log.user?.firstName} {log.user?.lastName} — {new Date(log.createdAt).toLocaleString('ru')}</Text>
           {log.details && <div style={{ fontSize: 12, color: '#8A94A6', marginTop: 2 }}>{log.details}</div>}
+          {log.action === 'file_upload' && fileMatch && (
+            <Button type="link" size="small" icon={<DownloadOutlined />}
+              onClick={() => {
+                // Find the most recent attachment matching this context
+                const file = attachments.find((a: any) => a.context === log.context);
+                if (file) handleDownload(file.id, fileMatch[1]);
+              }}
+              style={{ padding: 0, marginTop: 4, fontSize: 12 }}>
+              Скачать файл
+            </Button>
+          )}
         </div>
       ),
     };

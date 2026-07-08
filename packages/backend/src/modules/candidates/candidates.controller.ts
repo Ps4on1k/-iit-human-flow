@@ -16,8 +16,9 @@ const uploadStorage = diskStorage({
   destination: './uploads',
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    const baseName = Buffer.from(path.basename(file.originalname, ext), 'latin1').toString('utf8');
-    cb(null, `${randomUUID()}-${baseName}${ext}`);
+    // Decode the original name from latin1 bytes to UTF-8
+    const baseName = Buffer.from(file.originalname, 'latin1').toString('utf8').replace(ext, '');
+    cb(null, `${randomUUID()}${ext}`);
   },
 });
 
