@@ -598,6 +598,7 @@ model Attachment {
   mimeType    String   @map("mime_type")
   size        Int      // bytes
   path        String
+  context     String   @default("general")
   vacancyId   String?  @map("vacancy_id")
   candidateId String?  @map("candidate_id")
   interviewId String?  @map("interview_id")

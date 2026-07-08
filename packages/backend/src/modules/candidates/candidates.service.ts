@@ -146,10 +146,7 @@ export class CandidatesService {
     return this.prisma.attachment.findMany({
       where: {
         candidateId,
-        ...(context === 'interview' ? { interviewId: { not: null } } : {}),
-        ...(context === 'background_check' ? { backgroundCheckId: { not: null } } : {}),
-        ...(context === 'offer' ? { offerId: { not: null } } : {}),
-        ...(context === 'general' ? { interviewId: null, backgroundCheckId: null, offerId: null } : {}),
+        ...(context ? { context } : {}),
       },
       include: { uploader: { select: { id: true, firstName: true, lastName: true } } },
       orderBy: { createdAt: 'desc' },
@@ -157,6 +154,7 @@ export class CandidatesService {
   }
 
   async uploadAttachment(candidateId: string, uploadedBy: string, file: { filename: string; originalname: string; mimetype: string; size: number; path: string }, context?: string) {
+    const ctx = context || 'general';
     const data: any = {
       candidateId,
       uploadedBy,
@@ -165,21 +163,8 @@ export class CandidatesService {
       mimeType: file.mimetype,
       size: file.size,
       path: file.path,
+      context: ctx,
     };
-
-    // Link to context entity if exists
-    if (context && context !== 'general') {
-      if (context === 'interview') {
-        const interview = await this.prisma.interview.findFirst({ where: { candidateId }, orderBy: { createdAt: 'desc' } });
-        if (interview) data.interviewId = interview.id;
-      } else if (context === 'background_check') {
-        const bg = await this.prisma.backgroundCheck.findFirst({ where: { candidateId }, orderBy: { createdAt: 'desc' } });
-        if (bg) data.backgroundCheckId = bg.id;
-      } else if (context === 'offer') {
-        const offer = await this.prisma.offer.findFirst({ where: { candidateId }, orderBy: { createdAt: 'desc' } });
-        if (offer) data.offerId = offer.id;
-      }
-    }
 
     const attachment = await this.prisma.attachment.create({ data });
 
@@ -192,8 +177,8 @@ export class CandidatesService {
         candidateId,
         userId: uploadedBy,
         action: 'file_upload',
-        details: `Загружен файл «${file.originalname}» (${(file.size / 1024).toFixed(1)} KB) в раздел «${contextLabels[context || 'general']}»`,
-        context: context || 'general',
+        details: `Загружен файл «${file.originalname}» (${(file.size / 1024).toFixed(1)} KB) в раздел «${contextLabels[ctx]}»`,
+        context: ctx,
       },
     });
 
@@ -202,5 +187,9 @@ export class CandidatesService {
 
   async deleteAttachment(id: string) {
     return this.prisma.attachment.delete({ where: { id } });
+  }
+
+  async getAttachmentById(id: string) {
+    return this.prisma.attachment.findUnique({ where: { id } });
   }
 }

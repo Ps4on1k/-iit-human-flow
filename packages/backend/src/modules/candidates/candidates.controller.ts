@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, UploadedFile, UseInterceptors, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
 import * as path from 'path';
+import * as fs from 'fs';
+import { Response } from 'express';
 import { CandidatesService } from './candidates.service';
 import { CreateCandidateDto } from './dto/create-candidate.dto';
 import { UpdateCandidateDto } from './dto/update-candidate.dto';
@@ -108,5 +110,19 @@ export class CandidatesController {
   @ApiOperation({ summary: 'Delete attachment' })
   deleteAttachment(@Param('attachmentId') attachmentId: string) {
     return this.candidatesService.deleteAttachment(attachmentId);
+  }
+
+  @Get('download/:attachmentId')
+  @ApiOperation({ summary: 'Download attachment file' })
+  async download(@Param('attachmentId') attachmentId: string, @Res() res: Response) {
+    const attachment = await this.candidatesService.getAttachmentById(attachmentId);
+    if (!attachment || !fs.existsSync(attachment.path)) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+    res.set({
+      'Content-Type': attachment.mimeType,
+      'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
+    });
+    fs.createReadStream(attachment.path).pipe(res);
   }
 }

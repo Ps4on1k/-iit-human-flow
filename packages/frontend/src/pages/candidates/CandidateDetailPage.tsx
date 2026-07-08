@@ -130,11 +130,7 @@ export function CandidateDetailPage() {
   if (!candidate) return null;
 
   const getAttachmentsForContext = (ctx: string) => {
-    if (ctx === 'general') return attachments.filter((a) => !a.interviewId && !a.backgroundCheckId && !a.offerId);
-    if (ctx === 'interview') return attachments.filter((a) => a.interviewId);
-    if (ctx === 'background_check') return attachments.filter((a) => a.backgroundCheckId);
-    if (ctx === 'offer') return attachments.filter((a) => a.offerId);
-    return [];
+    return attachments.filter((a) => a.context === ctx);
   };
 
   const getNotesForContext = (ctx: string) => notes.filter((n) => n.context === ctx);
@@ -159,6 +155,7 @@ export function CandidateDetailPage() {
         </Upload>
         <List size="small" style={{ marginTop: 8 }} dataSource={files} renderItem={(file: any) => (
           <List.Item actions={[
+            <Button type="link" size="small" href={`/api/candidates/download/${file.id}`} target="_blank">Скачать</Button>,
             <Button type="text" danger size="small" icon={<DeleteOutlined />} onClick={() => handleDeleteAttachment(file.id)} />,
           ]}>
             <List.Item.Meta avatar={<FileOutlined />} title={file.originalName}
@@ -169,6 +166,14 @@ export function CandidateDetailPage() {
     );
   };
 
+  const renderLinkifiedText = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    return parts.map((part, i) =>
+      urlRegex.test(part) ? <a key={i} href={part} target="_blank" rel="noopener noreferrer">{part}</a> : part
+    );
+  };
+
   const renderNotes = (ctx: string) => (
     <List size="small" dataSource={getNotesForContext(ctx)} renderItem={(note: any) => (
       <List.Item actions={[
@@ -176,7 +181,7 @@ export function CandidateDetailPage() {
       ]}>
         <List.Item.Meta
           title={<>{note.author?.firstName} {note.author?.lastName} <Text type="secondary">— {new Date(note.createdAt).toLocaleString('ru')}</Text></>}
-          description={note.content} />
+          description={<span style={{ wordBreak: 'break-word' }}>{renderLinkifiedText(note.content)}</span>} />
       </List.Item>
     )} />
   );
