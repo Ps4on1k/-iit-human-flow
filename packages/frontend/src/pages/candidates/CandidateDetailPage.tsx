@@ -186,17 +186,46 @@ export function CandidateDetailPage() {
     )} />
   );
 
-  const activityLogItems = activityLog.map((log) => ({
-    color: log.action === 'file_upload' ? 'blue' : log.action === 'status_change' ? 'orange' : 'green',
-    children: (
-      <div>
-        <Text strong>{log.action === 'file_upload' ? '📎 Файл' : log.action === 'status_change' ? '🔄 Смена статуса' : '💬 Заметка'}</Text>
-        <br />
-        <Text type="secondary" style={{ fontSize: 12 }}>{log.user?.firstName} {log.user?.lastName} — {new Date(log.createdAt).toLocaleString('ru')}</Text>
-        {log.details && <div style={{ fontSize: 12, color: '#8A94A6', marginTop: 2 }}>{log.details}</div>}
-      </div>
-    ),
-  }));
+  const parseStatusName = (code: string) => stages.find((s) => s.code === code)?.name || code;
+
+  const parseDetails = (details: string) => {
+    if (!details) return '';
+    try {
+      const parsed = JSON.parse(details);
+      if (parsed.from && parsed.to) return `«${parseStatusName(parsed.from)}» → «${parseStatusName(parsed.to)}»`;
+      if (parsed.filename) return `Файл «${parsed.filename}»`;
+    } catch {}
+    return details;
+  };
+
+  const activityLogItems = activityLog.map((log) => {
+    let title = '💬 Заметка';
+    let color = 'green';
+    if (log.action === 'file_upload') { title = '📎 Файл'; color = 'blue'; }
+    else if (log.action === 'status_change') {
+      const details = parseDetails(log.details);
+      const match = details.match(/→ «(.+?)»/);
+      title = match ? match[1] : '🔄 Смена статуса';
+      color = 'orange';
+    }
+
+    return {
+      color,
+      children: (
+        <div>
+          <Text strong>{title}</Text>
+          <br />
+          <Text type="secondary" style={{ fontSize: 12 }}>{log.user?.firstName} {log.user?.lastName} — {new Date(log.createdAt).toLocaleString('ru')}</Text>
+          {log.action === 'status_change' && log.details && (
+            <div style={{ fontSize: 12, color: '#8A94A6', marginTop: 2 }}>{parseDetails(log.details)}</div>
+          )}
+          {log.action !== 'status_change' && log.details && (
+            <div style={{ fontSize: 12, color: '#8A94A6', marginTop: 2 }}>{log.details}</div>
+          )}
+        </div>
+      ),
+    };
+  });
 
   return (
     <div>
