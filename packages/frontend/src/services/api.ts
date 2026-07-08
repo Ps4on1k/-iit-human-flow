@@ -67,6 +67,7 @@ export const interviewsApi = {
   create: (data: any) => api.post('/interviews', data),
   updateResult: (id: string, result: string, feedback?: string, score?: number) =>
     api.patch(`/interviews/${id}/result`, { result, feedback, score }),
+  remove: (id: string) => api.delete(`/interviews/${id}`),
 };
 
 // Background Check API

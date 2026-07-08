@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { InterviewsService } from './interviews.service';
 import { CreateInterviewDto } from './dto/create-interview.dto';
@@ -32,5 +32,11 @@ export class InterviewsController {
     @Body('score') score?: number,
   ) {
     return this.interviewsService.updateResult(id, result, feedback, score);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Remove interviewer' })
+  remove(@Param('id') id: string) {
+    return this.interviewsService.remove(id);
   }
 }

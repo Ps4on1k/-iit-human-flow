@@ -29,4 +29,10 @@ export class InterviewsService {
       data: { result: result as any, feedback, score },
     });
   }
+
+  async remove(id: string) {
+    const interview = await this.prisma.interview.findUnique({ where: { id } });
+    if (!interview) throw new NotFoundException('Интервью не найдено');
+    return this.prisma.interview.delete({ where: { id } });
+  }
 }

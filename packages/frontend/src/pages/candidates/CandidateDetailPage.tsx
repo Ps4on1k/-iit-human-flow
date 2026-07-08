@@ -2,7 +2,8 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Button, Tabs, Timeline, Form, Input, Upload, List, Typography, Divider, Select, Row, Col, Modal, message, Space, Tag } from 'antd';
 import { ArrowLeftOutlined, UploadOutlined, DeleteOutlined, FileOutlined, EditOutlined, DownloadOutlined } from '@ant-design/icons';
-import { candidatesApi, pipelinesApi, votingApi, downloadFile } from '@/services/api';
+import { candidatesApi, pipelinesApi, votingApi, interviewsApi, downloadFile } from '@/services/api';
+import { useAuthStore } from '@/store/auth-store';
 import api from '@/services/api';
 
 const { Text } = Typography;
@@ -15,11 +16,13 @@ const voteIcons: Record<string, string> = { for: '👍', against: '👎', neutra
 export function CandidateDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [candidate, setCandidate] = useState<any>(null);
   const [stages, setStages] = useState<any[]>([]);
   const [attachments, setAttachments] = useState<any[]>([]);
   const [activityLog, setActivityLog] = useState<any[]>([]);
   const [votes, setVotes] = useState<any>(null);
+  const [interviews, setInterviews] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [noteForm] = Form.useForm();
@@ -28,7 +31,10 @@ export function CandidateDetailPage() {
   const [editForm] = Form.useForm();
   const [voteModal, setVoteModal] = useState(false);
   const [selectedVote, setSelectedVote] = useState<string>('');
+  const [selectedInterviewers, setSelectedInterviewers] = useState<string[]>([]);
   const timelineRef = useRef<HTMLDivElement>(null);
+
+  const isRecruiterOrAdmin = user?.role === 'RECRUITER' || user?.role === 'ADMIN';
 
   const load = async () => {
     if (!id) return;
@@ -45,6 +51,7 @@ export function CandidateDetailPage() {
       loadAttachments();
       loadVotes();
       loadUsers();
+      loadInterviews();
     } finally { setLoading(false); }
   };
 
@@ -70,6 +77,15 @@ export function CandidateDetailPage() {
   const loadUsers = useCallback(async () => {
     try { const { data } = await api.get('/users'); setAllUsers(data); } catch {}
   }, []);
+
+  const loadInterviews = useCallback(async () => {
+    if (!id) return;
+    try {
+      const { data } = await interviewsApi.list(id);
+      setInterviews(data);
+      setSelectedInterviewers(data.map((i: any) => i.interviewerId || i.interviewer?.id).filter(Boolean));
+    } catch {}
+  }, [id]);
 
   useEffect(() => { load(); }, [id]);
   useEffect(() => { if (timelineRef.current) timelineRef.current.scrollLeft = timelineRef.current.scrollWidth; }, [candidate?.status, stages]);
@@ -154,16 +170,28 @@ export function CandidateDetailPage() {
     load();
   };
 
-  const handleAddInterviewer = async (userId: string) => {
+  const handleAddInterviewer = async (userIds: string[]) => {
     if (!id) return;
+    for (const userId of userIds) {
+      try {
+        await api.post('/interviews', {
+          candidateId: id,
+          interviewerId: userId,
+          type: 'SCREENING',
+          vacancyId: candidate.vacancyId,
+        });
+      } catch (err: any) {
+        message.error(err.response?.data?.message || 'Ошибка');
+      }
+    }
+    message.success('Интервьюеры добавлены');
+    load();
+  };
+
+  const handleRemoveInterviewer = async (interviewId: string) => {
     try {
-      await api.post('/interviews', {
-        candidateId: id,
-        interviewerId: userId,
-        type: 'SCREENING',
-        vacancyId: candidate.vacancyId,
-      });
-      message.success('Интервьюер добавлен');
+      await interviewsApi.remove(interviewId);
+      message.success('Интервьюер удалён');
       load();
     } catch (err: any) {
       message.error(err.response?.data?.message || 'Ошибка');
@@ -178,16 +206,13 @@ export function CandidateDetailPage() {
     else if (log.action === 'status_change') {
       const details = log.details || '';
       let toName = '';
-      // Try new format: Статус изменён: «old» → «new»
       const textMatch = details.match(/→ «(.+?)»/);
       if (textMatch) {
         toName = textMatch[1];
       } else {
-        // Try old JSON format: {"from":"code","to":"code"}
         try {
           const parsed = JSON.parse(details);
           if (parsed.to) {
-            // Resolve code to name
             const stageMatch = stages.find((s) => s.code === parsed.to);
             toName = stageMatch?.name || parsed.to;
           }
@@ -197,7 +222,6 @@ export function CandidateDetailPage() {
       color = 'orange';
     }
 
-    // Parse file name from details for file_upload entries
     const fileMatch = log.details?.match(/«(.+?)»/);
 
     return {
@@ -211,7 +235,6 @@ export function CandidateDetailPage() {
           {log.action === 'file_upload' && fileMatch && (
             <Button type="link" size="small" icon={<DownloadOutlined />}
               onClick={() => {
-                // Find the most recent attachment matching this context
                 const file = attachments.find((a: any) => a.context === log.context);
                 if (file) handleDownload(file.id, fileMatch[1]);
               }}
@@ -226,7 +249,7 @@ export function CandidateDetailPage() {
 
   if (!candidate) return null;
 
-  const getAttachmentsForContext = (ctx: string) => attachments.filter((a) => a.context === ctx);
+  const getAttachmentsForContext = (ctx: string) => attachments.filter((a: any) => a.context === ctx);
   const getNotesForContext = (ctx: string) => (candidate.notes || []).filter((n: any) => n.context === ctx);
 
   const renderNoteForm = (ctx: string) => (
@@ -250,8 +273,8 @@ export function CandidateDetailPage() {
         <List size="small" style={{ marginTop: 8 }} dataSource={files} renderItem={(file: any) => (
           <List.Item actions={[
             <Button type="link" size="small" icon={<DownloadOutlined />} onClick={() => handleDownload(file.id, file.originalName)}>Скачать</Button>,
-            <Button type="text" danger size="small" icon={<DeleteOutlined />} onClick={() => handleDeleteAttachment(file.id)} />,
-          ]}>
+            isRecruiterOrAdmin && <Button type="text" danger size="small" icon={<DeleteOutlined />} onClick={() => handleDeleteAttachment(file.id)} />,
+          ].filter(Boolean)}>
             <List.Item.Meta avatar={<FileOutlined />} title={file.originalName}
               description={`${(file.size / 1024).toFixed(1)} KB · ${file.uploader?.firstName} ${file.uploader?.lastName}`} />
           </List.Item>
@@ -271,33 +294,16 @@ export function CandidateDetailPage() {
   const renderNotes = (ctx: string) => {
     const ctxNotes = getNotesForContext(ctx);
     return (
-      <List
-        size="small"
-        dataSource={ctxNotes}
-        renderItem={(note: any) => {
-          const authorName = `${note.author?.firstName} ${note.author?.lastName}`;
-          const dateStr = new Date(note.createdAt).toLocaleString('ru');
-          return (
-            <List.Item
-              actions={[
-                <Button
-                  key="del"
-                  type="text"
-                  danger
-                  size="small"
-                  icon={<DeleteOutlined />}
-                  onClick={() => handleDeleteNote(note.id)}
-                />,
-              ]}
-            >
-              <List.Item.Meta
-                title={<>{authorName} <Text type="secondary">— {dateStr}</Text></>}
-                description={<span style={{ wordBreak: 'break-word' }}>{renderLinkifiedText(note.content)}</span>}
-              />
-            </List.Item>
-          );
-        }}
-      />
+      <List size="small" dataSource={ctxNotes} renderItem={(note: any) => (
+        <List.Item actions={[
+          isRecruiterOrAdmin && <Button key="del" type="text" danger size="small" icon={<DeleteOutlined />} onClick={() => handleDeleteNote(note.id)} />,
+        ].filter(Boolean)}>
+          <List.Item.Meta
+            title={<>{note.author?.firstName} {note.author?.lastName} <Text type="secondary">— {new Date(note.createdAt).toLocaleString('ru')}</Text></>}
+            description={<span style={{ wordBreak: 'break-word' }}>{renderLinkifiedText(note.content)}</span>}
+          />
+        </List.Item>
+      )} />
     );
   };
 
@@ -307,9 +313,17 @@ export function CandidateDetailPage() {
 
       <Card loading={loading}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <Typography.Title level={4} style={{ margin: 0 }}>{candidate.firstName} {candidate.lastName}</Typography.Title>
-            <Button type="text" icon={<EditOutlined />} size="small" onClick={openEdit} />
+            {isRecruiterOrAdmin && <Button type="text" icon={<EditOutlined />} size="small" onClick={openEdit} />}
+            {/* Vote summary pills near name */}
+            {votes && votes.total > 0 && (
+              <Space size={4}>
+                <Tag color="success" style={{ borderRadius: 8, fontWeight: 600 }}>👍 {votes.for}</Tag>
+                <Tag color="error" style={{ borderRadius: 8, fontWeight: 600 }}>👎 {votes.against}</Tag>
+                {votes.neutral > 0 && <Tag style={{ borderRadius: 8, fontWeight: 600 }}>😐 {votes.neutral}</Tag>}
+              </Space>
+            )}
           </div>
           <Select style={{ width: 200 }} value={candidate.status} onChange={handleStatusChange}
             options={stages.map((s) => ({ value: s.code, label: s.name }))} />
@@ -317,28 +331,36 @@ export function CandidateDetailPage() {
 
         {candidate.email && <Text type="secondary" style={{ display: 'block', marginBottom: 8 }}>{candidate.email}</Text>}
 
-        {/* Vote summary */}
-        {votes && votes.total > 0 && (
-          <div style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'center' }}>
-            <Tag color="success" style={{ borderRadius: 2 }}>👍 За: {votes.for}</Tag>
-            <Tag color="error" style={{ borderRadius: 2 }}>👎 Против: {votes.against}</Tag>
-            <Tag style={{ borderRadius: 2 }}>😐 Нейтрально: {votes.neutral}</Tag>
-            <Button size="small" onClick={() => setVoteModal(true)}>Проголосовать</Button>
-          </div>
-        )}
-        {votes && votes.total === 0 && (
-          <Button size="small" onClick={() => setVoteModal(true)} style={{ marginBottom: 12 }}>Проголосовать</Button>
-        )}
-
-        {/* Horizontal timeline */}
-        <div ref={timelineRef} style={{ display: 'flex', gap: 0, overflowX: 'auto', paddingBottom: 8, marginBottom: 16, borderBottom: '1px solid #E8EBF0', scrollBehavior: 'smooth' }}>
+        {/* Stylish Horizontal Timeline */}
+        <div ref={timelineRef} style={{
+          display: 'flex', gap: 0, overflowX: 'auto', paddingBottom: 12, marginBottom: 16,
+          borderBottom: '1px solid #E8EBF0', scrollBehavior: 'smooth',
+        }}>
           {stages.map((stage, idx) => {
             const isActive = stage.code === candidate.status;
             const isPast = stages.findIndex((s) => s.code === candidate.status) > idx;
             return (
               <div key={stage.code} style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center' }}>
-                <div style={{ padding: '6px 16px', borderRadius: 2, fontSize: 12, fontWeight: isActive ? 700 : 500, background: isActive ? stage.color : isPast ? '#E8EBF0' : 'transparent', color: isActive ? '#fff' : isPast ? '#8A94A6' : '#AEB7C4', whiteSpace: 'nowrap', transition: 'all 0.2s' }}>{stage.name}</div>
-                {idx < stages.length - 1 && <div style={{ width: 24, height: 2, background: isPast ? stage.color : '#E8EBF0', flexShrink: 0 }} />}
+                <div style={{
+                  padding: '8px 20px', borderRadius: 16,
+                  fontSize: 12, fontWeight: isActive ? 700 : 500,
+                  background: isActive ? stage.color : isPast ? `${stage.color}20` : 'transparent',
+                  color: isActive ? '#fff' : isPast ? stage.color : '#AEB7C4',
+                  border: `1.5px solid ${isActive ? stage.color : isPast ? `${stage.color}40` : '#E8EBF0'}`,
+                  whiteSpace: 'nowrap', transition: 'all 0.25s ease',
+                  cursor: 'default', boxShadow: isActive ? `0 2px 8px ${stage.color}40` : 'none',
+                  transform: isActive ? 'scale(1.05)' : 'scale(1)',
+                }}>
+                  {stage.name}
+                </div>
+                {idx < stages.length - 1 && (
+                  <div style={{
+                    width: 32, height: 2,
+                    background: isPast ? stage.color : '#E8EBF0',
+                    flexShrink: 0, borderRadius: 1,
+                    opacity: isPast ? 0.8 : 0.4,
+                  }} />
+                )}
               </div>
             );
           })}
@@ -363,27 +385,47 @@ export function CandidateDetailPage() {
           key: 'interviews', label: 'Собеседования',
           children: (
             <Card>
-              <Space direction="vertical" style={{ width: '100%' }}>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 16 }}>
-                  <Text strong>Добавить интервьюера:</Text>
-                  <Select style={{ width: 300 }} placeholder="Выберите пользователя" showSearch optionFilterProp="label"
-                    onChange={handleAddInterviewer}
-                    options={allUsers.map((u) => ({ value: u.id, label: `${u.firstName} ${u.lastName} (${u.role})` }))} />
+              {/* Interviewer pills */}
+              <div style={{ marginBottom: 16 }}>
+                <Text strong style={{ display: 'block', marginBottom: 8 }}>Интервьюеры</Text>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+                  {interviews.map((interview: any) => (
+                    <Tag key={interview.id} closable={isRecruiterOrAdmin} onClose={() => handleRemoveInterviewer(interview.id)}
+                      color="#3A8DFF" style={{ borderRadius: 16, padding: '4px 12px', fontWeight: 500, fontSize: 12 }}>
+                      {interview.interviewer?.firstName} {interview.interviewer?.lastName}
+                    </Tag>
+                  ))}
+                  {isRecruiterOrAdmin && (
+                    <Select
+                      mode="multiple" style={{ minWidth: 300 }} placeholder="Добавить интервьюера"
+                      showSearch optionFilterProp="label"
+                      value={selectedInterviewers}
+                      onChange={handleAddInterviewer}
+                      options={allUsers
+                        .filter((u) => !selectedInterviewers.includes(u.id))
+                        .map((u) => ({ value: u.id, label: `${u.firstName} ${u.lastName} (${u.role})` }))}
+                    />
+                  )}
                 </div>
-                {candidate.votes?.length > 0 && (
-                  <>
-                    <Divider />
-                    <Text strong>Голоса интервьюеров</Text>
-                    <List size="small" dataSource={candidate.votes} renderItem={(v: any) => (
-                      <List.Item>
-                        <Tag color={voteColors[v.vote]}>{voteLabels[v.vote]}</Tag>
-                        <Text>{v.user?.firstName} {v.user?.lastName}</Text>
-                        <Text type="secondary" style={{ marginLeft: 'auto' }}>{new Date(v.createdAt).toLocaleString('ru')}</Text>
-                      </List.Item>
-                    )} />
-                  </>
-                )}
-              </Space>
+              </div>
+
+              {/* Voting section */}
+              <Divider />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <Text strong>Голосование</Text>
+                <Button size="small" onClick={() => setVoteModal(true)}>Проголосовать</Button>
+              </div>
+              {votes && votes.total > 0 ? (
+                <List size="small" dataSource={votes.votes} renderItem={(v: any) => (
+                  <List.Item>
+                    <Tag color={voteColors[v.vote]} style={{ borderRadius: 8 }}>{voteIcons[v.vote]} {voteLabels[v.vote]}</Tag>
+                    <Text>{v.user?.firstName} {v.user?.lastName}</Text>
+                  </List.Item>
+                )} />
+              ) : (
+                <Text type="secondary">Пока нет голосов</Text>
+              )}
+
               <Divider />
               <Typography.Text strong>Файлы</Typography.Text>
               {renderAttachments('interview')}
@@ -448,7 +490,7 @@ export function CandidateDetailPage() {
           {Object.entries(voteLabels).map(([value, label]) => (
             <Button key={value} size="large" type={selectedVote === value ? 'primary' : 'default'}
               onClick={() => setSelectedVote(value)}
-              style={{ borderColor: selectedVote === value ? undefined : '#D8DCE3' }}>
+              style={{ borderColor: selectedVote === value ? undefined : '#D8DCE3', borderRadius: 8 }}>
               {voteIcons[value]} {label}
             </Button>
           ))}
