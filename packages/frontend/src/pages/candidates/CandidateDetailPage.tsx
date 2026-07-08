@@ -31,7 +31,6 @@ export function CandidateDetailPage() {
   const [editForm] = Form.useForm();
   const [voteModal, setVoteModal] = useState(false);
   const [selectedVote, setSelectedVote] = useState<string>('');
-  const [selectedInterviewers, setSelectedInterviewers] = useState<string[]>([]);
   const timelineRef = useRef<HTMLDivElement>(null);
 
   const isRecruiterOrAdmin = user?.role === 'RECRUITER' || user?.role === 'ADMIN';
@@ -83,7 +82,6 @@ export function CandidateDetailPage() {
     try {
       const { data } = await interviewsApi.list(id);
       setInterviews(data);
-      setSelectedInterviewers(data.map((i: any) => i.interviewerId || i.interviewer?.id).filter(Boolean));
     } catch {}
   }, [id]);
 
@@ -170,22 +168,20 @@ export function CandidateDetailPage() {
     load();
   };
 
-  const handleAddInterviewer = async (userIds: string[]) => {
-    if (!id) return;
-    for (const userId of userIds) {
-      try {
-        await api.post('/interviews', {
-          candidateId: id,
-          interviewerId: userId,
-          type: 'SCREENING',
-          vacancyId: candidate.vacancyId,
-        });
-      } catch (err: any) {
-        message.error(err.response?.data?.message || 'Ошибка');
-      }
+  const handleAddInterviewer = async (userId: string) => {
+    if (!id || !userId) return;
+    try {
+      await api.post('/interviews', {
+        candidateId: id,
+        interviewerId: userId,
+        type: 'SCREENING',
+        vacancyId: candidate.vacancyId,
+      });
+      message.success('Интервьюер добавлен');
+      load();
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Ошибка');
     }
-    message.success('Интервьюеры добавлены');
-    load();
   };
 
   const handleRemoveInterviewer = async (interviewId: string) => {
@@ -397,12 +393,11 @@ export function CandidateDetailPage() {
                   ))}
                   {isRecruiterOrAdmin && (
                     <Select
-                      mode="multiple" style={{ minWidth: 300 }} placeholder="Добавить интервьюера"
+                      style={{ minWidth: 300 }} placeholder="Добавить интервьюера"
                       showSearch optionFilterProp="label"
-                      value={selectedInterviewers}
                       onChange={handleAddInterviewer}
                       options={allUsers
-                        .filter((u) => !selectedInterviewers.includes(u.id))
+                        .filter((u) => !interviews.some((i) => i.interviewer?.id === u.id))
                         .map((u) => ({ value: u.id, label: `${u.firstName} ${u.lastName} (${u.role})` }))}
                     />
                   )}
