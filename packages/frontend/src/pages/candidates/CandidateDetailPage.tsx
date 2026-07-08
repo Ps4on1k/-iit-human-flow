@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Tag, Descriptions, Button, Tabs, Timeline, Form, Input, Upload, List, Typography, Divider, Select, Row, Col, Modal, message } from 'antd';
+import { Card, Descriptions, Button, Tabs, Timeline, Form, Input, Upload, List, Typography, Divider, Select, Row, Col, Modal, message } from 'antd';
 import { ArrowLeftOutlined, UploadOutlined, DeleteOutlined, FileOutlined, EditOutlined } from '@ant-design/icons';
 import { candidatesApi, pipelinesApi } from '@/services/api';
 import api from '@/services/api';
@@ -129,9 +129,6 @@ export function CandidateDetailPage() {
 
   if (!candidate) return null;
 
-  const currentStage = stages.find((s) => s.code === candidate.status);
-  const lastStatusChange = candidate.statusHistory?.[0];
-
   const getAttachmentsForContext = (ctx: string) => {
     if (ctx === 'general') return attachments.filter((a) => !a.interviewId && !a.backgroundCheckId && !a.offerId);
     if (ctx === 'interview') return attachments.filter((a) => a.interviewId);
@@ -184,11 +181,11 @@ export function CandidateDetailPage() {
     )} />
   );
 
-  const activityLogItems = activityLog.filter((l) => l.action !== 'status_change').map((log) => ({
-    color: log.action === 'file_upload' ? 'blue' : 'green',
+  const activityLogItems = activityLog.map((log) => ({
+    color: log.action === 'file_upload' ? 'blue' : log.action === 'status_change' ? 'orange' : 'green',
     children: (
       <div>
-        <Text strong>{log.action === 'file_upload' ? '📎 Файл' : '💬 Заметка'}</Text>
+        <Text strong>{log.action === 'file_upload' ? '📎 Файл' : log.action === 'status_change' ? '🔄 Смена статуса' : '💬 Заметка'}</Text>
         <br />
         <Text type="secondary" style={{ fontSize: 12 }}>{log.user?.firstName} {log.user?.lastName} — {new Date(log.createdAt).toLocaleString('ru')}</Text>
         {log.details && <div style={{ fontSize: 12, color: '#8A94A6', marginTop: 2 }}>{log.details}</div>}
@@ -207,7 +204,6 @@ export function CandidateDetailPage() {
             <Button type="text" icon={<EditOutlined />} size="small" onClick={openEdit} />
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            {currentStage && <Tag color={currentStage.color || 'default'}>{currentStage.name}</Tag>}
             <Select style={{ width: 200 }} value={candidate.status} onChange={handleStatusChange}
               options={stages.map((s) => ({ value: s.code, label: s.name }))} />
           </div>
@@ -235,13 +231,6 @@ export function CandidateDetailPage() {
             );
           })}
         </div>
-
-        {lastStatusChange && (
-          <div style={{ padding: '6px 12px', borderRadius: 2, background: '#F4F5F7', marginBottom: 16, fontSize: 12, color: '#8A94A6' }}>
-            Статус: <Text strong>{stages.find((s) => s.code === lastStatusChange.toStatus)?.name || lastStatusChange.toStatus}</Text>
-            {' — '}{lastStatusChange.changer?.firstName} {lastStatusChange.changer?.lastName}, {new Date(lastStatusChange.createdAt).toLocaleString('ru')}
-          </div>
-        )}
 
         <Descriptions column={{ xs: 1, sm: 2, lg: 3 }}>
           <Descriptions.Item label="Телефон">{candidate.phone || '—'}</Descriptions.Item>
