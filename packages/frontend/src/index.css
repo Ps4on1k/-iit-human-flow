@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --graphite: #2D3142;
+  --navy: #141B2D;
+  --gray: #F4F5F7;
+  --gray-dark: #D0D5DD;
+  --white: #FFFFFF;
+  --blue: #3A8DFF;
+  --blue-soft: #EDF4FF;
+  --blue-mid: #1A5FCC;
+  --cyan: #42D9C8;
+  --cyan-soft: #E0FAF7;
+  --secondary: #AEB7C4;
+  --green: #21B573;
+  --green-soft: #F0FAF5;
+  --yellow: #FFB020;
+  --yellow-soft: #FFF8EC;
+  --red: #E5484D;
+  --red-soft: #FFF0F0;
+  --neutral: #8A94A6;
+  --text-body: #4A5568;
+  --radius: 2px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.ant-layout {
+  font-family: 'Manrope', sans-serif !important;
+}
+
+.ant-table-thead > tr > th {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+.ant-modal-content {
+  border-radius: 2px !important;
+}
+
+.ant-tag {
+  border-radius: 2px !important;
+}
+
+.ant-card {
+  border-radius: 2px !important;
+}
+
+.ant-descriptions-item-label {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--neutral) !important;
+}

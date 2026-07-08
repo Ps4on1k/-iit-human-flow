@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System — Инновация ИТ</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Geologica:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --graphite: #111315;
+  --navy: #141B2D;
+  --gray: #EEF1F4;
+  --gray-dark: #D8DCE3;
+  --white: #FFFFFF;
+  --blue: #3A8DFF;
+  --blue-soft: #EDF4FF;
+  --blue-mid: #1A5FCC;
+  --cyan: #42D9C8;
+  --cyan-soft: #E0FAF7;
+  --secondary: #AEB7C4;
+  --green: #21B573;
+  --green-soft: #F0FAF5;
+  --yellow: #FFB020;
+  --yellow-soft: #FFF8EC;
+  --red: #E5484D;
+  --red-soft: #FFF0F0;
+  --neutral: #8A94A6;
+  --text-body: #4A5568;
+  --radius: 2px;
+  --font: 'Manrope', sans-serif;
+  --font-alt: 'Geologica', sans-serif;
+  --sidebar-w: 248px;
+  --transition: 0.15s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--graphite);
+  line-height: 1.6;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ─── SIDEBAR ─── */
+aside {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--graphite);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 100;
+}
+.sidebar-logo {
+  padding: 28px 24px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; gap: 12px;
+}
+.sidebar-logo-icon svg { width: 24px; height: 24px; }
+.sidebar-logo-text { font-size: 11px; font-weight: 800; letter-spacing: 0.18em; color: var(--white); text-transform: uppercase; }
+.sidebar-logo-sub { font-size: 9px; font-weight: 500; letter-spacing: 0.14em; color: var(--neutral); text-transform: uppercase; margin-top: 2px; }
+
+.sidebar-section { padding: 20px 0 8px; }
+.sidebar-section-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--neutral);
+  padding: 0 24px 8px;
+}
+.sidebar-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 24px;
+  font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: all var(--transition);
+  border-left: 2px solid transparent;
+}
+.sidebar-link:hover {
+  color: var(--white);
+  background: rgba(255,255,255,0.04);
+}
+.sidebar-link.active {
+  color: var(--white);
+  border-left-color: var(--blue);
+  background: rgba(58,141,255,0.08);
+}
+.sidebar-link-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+  opacity: 0.4;
+}
+.sidebar-link:hover .sidebar-link-dot,
+.sidebar-link.active .sidebar-link-dot { opacity: 1; }
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px 24px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 10px; color: var(--neutral);
+  letter-spacing: 0.06em;
+}
+
+/* ─── MAIN ─── */
+main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  max-width: 100%;
+}
+
+/* ─── SECTIONS ─── */
+.ds-section {
+  padding: 80px 64px;
+  border-bottom: 1px solid var(--gray);
+}
+.ds-section:last-child { border-bottom: none; }
+
+.section-header { margin-bottom: 56px; }
+.section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--blue);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: 32px; font-weight: 800;
+  letter-spacing: -0.025em; line-height: 1.1;
+  color: var(--graphite);
+  margin-bottom: 12px;
+}
+.section-desc {
+  font-size: 14px; color: var(--text-body);
+  line-height: 1.7; max-width: 560px;
+}
+
+/* ─── HERO ─── */
+#hero {
+  background: var(--navy);
+  padding: 80px 64px;
+  position: relative; overflow: hidden;
+  border-bottom: none;
+}
+#hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 80% at 90% 50%, rgba(58,141,255,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid rgba(66,217,200,0.3);
+  padding: 5px 12px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+  color: var(--cyan); text-transform: uppercase;
+  margin-bottom: 32px;
+  border-radius: var(--radius);
+}
+.hero-tag::before { content: ''; width: 5px; height: 5px; background: var(--cyan); border-radius: 50%; }
+.hero-title {
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 800; letter-spacing: -0.035em;
+  line-height: 1; color: var(--white);
+  margin-bottom: 20px;
+}
+.hero-title span { color: var(--blue); }
+.hero-sub {
+  font-size: 15px; color: var(--secondary);
+  max-width: 480px; line-height: 1.7;
+  margin-bottom: 48px;
+}
+.hero-meta {
+  display: flex; gap: 40px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 32px;
+}
+.hero-stat-num { font-size: 22px; font-weight: 800; color: var(--white); }
+.hero-stat-label { font-size: 11px; color: var(--neutral); margin-top: 2px; }
+.hero-symbol {
+  position: absolute; right: 64px; top: 50%; transform: translateY(-50%);
+  opacity: 0.05;
+}
+
+/* ─── TOKEN ROW ─── */
+.token-table { width: 100%; border-collapse: collapse; }
+.token-table th {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--neutral);
+  text-align: left; padding: 0 16px 10px;
+  border-bottom: 1px solid var(--gray);
+}
+.token-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray);
+  font-size: 13px; vertical-align: middle;
+}
+.token-table tr:last-child td { border-bottom: none; }
+.token-table tr:hover td { background: var(--gray); }
+.token-name { font-family: 'Courier New', monospace; font-size: 12px; color: var(--blue); }
+.token-preview-box {
+  width: 24px; height: 24px; border-radius: var(--radius);
+  border: 1px solid rgba(0,0,0,0.08); flex-shrink: 0;
+}
+.token-value { font-family: 'Courier New', monospace; font-size: 11px; color: var(--neutral); }
+.copy-btn {
+  background: none; border: 1px solid var(--gray-dark);
+  border-radius: var(--radius);
+  padding: 3px 8px; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; color: var(--neutral);
+  cursor: pointer; transition: all var(--transition);
+  font-family: var(--font);
+}
+.copy-btn:hover { background: var(--graphite); color: var(--white); border-color: var(--graphite); }
+.copy-btn.copied { background: var(--green); border-color: var(--green); color: var(--white); }
+
+/* ─── COLORS ─── */
+.color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-bottom: 2px; }
+.color-swatch-block {
+  padding-bottom: 80%; position: relative; cursor: pointer;
+  transition: transform var(--transition);
+}
+.color-swatch-block:hover { transform: scale(1.04); z-index: 2; }
+.color-swatch-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 14px;
+}
+.csw-name { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; }
+.csw-hex { font-size: 11px; font-family: 'Courier New', monospace; opacity: 0.65; margin-top: 2px; }
+
+.status-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 24px; }
+.status-chip {
+  padding: 16px; border-radius: var(--radius);
+  display: flex; flex-direction: column; gap: 6px;
+}
+.status-dot { width: 8px; height: 8px; border-radius: 50%; }
+.status-cname { font-size: 12px; font-weight: 600; }
+.status-chex { font-size: 10px; font-family: monospace; color: var(--neutral); }
+
+/* ─── TYPOGRAPHY ─── */
+.type-scale { display: flex; flex-direction: column; gap: 0; }
+.type-row-ds {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  border: 1px solid var(--gray);
+  border-top: none;
+  gap: 24px;
+}
+.type-row-ds:first-child { border-top: 1px solid var(--gray); }
+.type-meta {
+  font-size: 10px; font-family: monospace;
+  color: var(--neutral); white-space: nowrap;
+  text-align: right; flex-shrink: 0;
+}
+.weight-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 24px; }
+.weight-card {
+  background: var(--gray); padding: 24px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.weight-sample { font-size: 28px; letter-spacing: -0.02em; line-height: 1; }
+.weight-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--neutral); }
+
+/* ─── SPACING ─── */
+.spacing-grid { display: flex; flex-direction: column; gap: 2px; }
+.spacing-row {
+  display: flex; align-items: center; gap: 20px;
+  padding: 14px 20px;
+  border: 1px solid var(--gray);
+  border-top: none;
+}
+.spacing-row:first-child { border-top: 1px solid var(--gray); }
+.spacing-bar { height: 100%; background: var(--blue); opacity: 0.7; border-radius: var(--radius); flex-shrink: 0; }
+.spacing-token { font-family: monospace; font-size: 12px; color: var(--blue); min-width: 100px; }
+.spacing-px { font-size: 13px; font-weight: 600; min-width: 60px; }
+.spacing-desc { font-size: 12px; color: var(--neutral); }
+
+/* ─── GRID ─── */
+.grid-demo {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 8px;
+  padding: 24px;
+  background: var(--gray);
+}
+.grid-col {
+  background: rgba(58,141,255,0.15);
+  border: 1px solid rgba(58,141,255,0.3);
+  height: 32px;
+  border-radius: var(--radius);
+}
+
+/* ─── BUTTONS ─── */
+.component-group { margin-bottom: 48px; }
+.component-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--neutral);
+  margin-bottom: 16px;
+}
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px;
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border: none; border-radius: var(--radius);
+  cursor: pointer; transition: all var(--transition);
+  white-space: nowrap; text-decoration: none;
+}
+.btn-sm { padding: 7px 16px; font-size: 11px; }
+.btn-lg { padding: 14px 28px; font-size: 13px; }
+
+.btn-primary { background: var(--blue); color: var(--white); }
+.btn-primary:hover { background: var(--blue-mid); }
+
+.btn-secondary {
+  background: transparent; color: var(--graphite);
+  border: 1px solid var(--gray-dark);
+}
+.btn-secondary:hover { background: var(--gray); border-color: var(--secondary); }
+
+.btn-ghost { background: transparent; color: var(--blue); border: 1px solid transparent; }
+.btn-ghost:hover { background: var(--blue-soft); }
+
+.btn-dark { background: var(--graphite); color: var(--white); }
+.btn-dark:hover { background: #1E2430; }
+
+.btn-danger { background: var(--red); color: var(--white); }
+.btn-danger:hover { background: #C43A3E; }
+
+.btn-cyan { background: var(--cyan); color: var(--navy); }
+.btn-cyan:hover { opacity: 0.85; }
+
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── INPUTS ─── */
+.input-group { display: flex; flex-direction: column; gap: 6px; }
+.input-label { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
+.input-hint { font-size: 11px; color: var(--neutral); }
+.input-error-msg { font-size: 11px; color: var(--red); }
+
+input[type="text"], input[type="email"], textarea, select {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--gray-dark);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--graphite);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  appearance: none;
+}
+input[type="text"]:focus, input[type="email"]:focus, textarea:focus, select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(58,141,255,0.12);
+}
+input.inp-error { border-color: var(--red); }
+input.inp-error:focus { box-shadow: 0 0 0 3px rgba(229,72,77,0.12); }
+input:disabled, textarea:disabled { background: var(--gray); color: var(--neutral); cursor: not-allowed; }
+
+.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* ─── BADGES ─── */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.badge-blue { background: var(--blue-soft); color: var(--blue-mid); }
+.badge-green { background: var(--green-soft); color: #1A7D54; }
+.badge-yellow { background: var(--yellow-soft); color: #C47A00; }
+.badge-red { background: var(--red-soft); color: #C0363A; }
+.badge-gray { background: var(--gray); color: var(--neutral); }
+.badge-dark { background: var(--graphite); color: var(--white); }
+.badge-cyan { background: var(--cyan-soft); color: #1A8C82; }
+.badge-outline { background: transparent; border: 1px solid var(--gray-dark); color: var(--neutral); }
+.badge-dot::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* ─── ALERTS ─── */
+.alert {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+}
+.alert-icon { flex-shrink: 0; font-size: 18px; margin-top: 1px; }
+.alert-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.alert-body { font-size: 12px; line-height: 1.6; }
+
+.alert-info { background: var(--blue-soft); border-left: 3px solid var(--blue); }
+.alert-info .alert-icon { color: var(--blue); }
+.alert-info .alert-title { color: var(--blue-mid); }
+.alert-info .alert-body { color: #2E5FA0; }
+
+.alert-success { background: var(--green-soft); border-left: 3px solid var(--green); }
+.alert-success .alert-icon { color: var(--green); }
+.alert-success .alert-title { color: #1A7D54; }
+.alert-success .alert-body { color: #1A7D54; }
+
+.alert-warning { background: var(--yellow-soft); border-left: 3px solid var(--yellow); }
+.alert-warning .alert-icon { color: var(--yellow); }
+.alert-warning .alert-title { color: #C47A00; }
+.alert-warning .alert-body { color: #C47A00; }
+
+.alert-danger { background: var(--red-soft); border-left: 3px solid var(--red); }
+.alert-danger .alert-icon { color: var(--red); }
+.alert-danger .alert-title { color: #C0363A; }
+.alert-danger .alert-body { color: #C0363A; }
+
+/* ─── CARDS ─── */
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--gray);
+  padding: 28px;
+  border-radius: var(--radius);
+}
+.card-dark {
+  background: var(--navy);
+  padding: 28px;
+}
+.card-accent {
+  background: var(--blue);
+  padding: 28px;
+}
+.card-gray {
+  background: var(--gray);
+  border: 1px solid var(--gray-dark);
+  padding: 28px;
+}
+
+.card-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 12px; }
+.card h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
+.card-body-text { font-size: 13px; line-height: 1.65; }
+
+/* Stat Card */
+.stat-card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+.stat-card { padding: 24px; background: var(--white); border: 1px solid var(--gray); }
+.stat-card-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--neutral); margin-bottom: 8px; }
+.stat-card-num { font-size: 32px; font-weight: 800; letter-spacing: -0.03em; color: var(--graphite); line-height: 1; }
+.stat-card-delta { font-size: 11px; font-weight: 600; margin-top: 6px; }
+.delta-pos { color: var(--green); }
+.delta-neg { color: var(--red); }
+
+/* ─── TABLE ─── */
+.ds-table { width: 100%; border-collapse: collapse; }
+.ds-table thead tr { background: var(--gray); }
+.ds-table th {
+  padding: 12px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--neutral);
+  text-align: left; border-bottom: 2px solid var(--gray-dark);
+}
+.ds-table td {
+  padding: 14px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--gray);
+  vertical-align: middle;
+}
+.ds-table tr:last-child td { border-bottom: none; }
+.ds-table tbody tr:hover td { background: rgba(238,241,244,0.5); }
+
+/* ─── NAVIGATION ─── */
+.nav-demo {
+  background: rgba(255,255,255,0.95);
+  border: 1px solid var(--gray);
+  padding: 0 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+}
+.nav-demo-logo { display: flex; align-items: center; gap: 10px; }
+.nav-demo-logo svg { width: 20px; height: 20px; }
+.nav-demo-logo span { font-size: 11px; font-weight: 800; letter-spacing: 0.16em; }
+.nav-demo-links { display: flex; gap: 24px; }
+.nav-demo-link { font-size: 12px; font-weight: 500; color: var(--neutral); text-decoration: none; letter-spacing: 0.04em; }
+.nav-demo-link.active { color: var(--graphite); }
+.nav-demo-actions { display: flex; gap: 8px; }
+
+.nav-dark-demo {
+  background: var(--navy);
+  padding: 0 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  margin-top: 2px;
+}
+.nav-dark-link { font-size: 12px; font-weight: 500; color: var(--secondary); text-decoration: none; letter-spacing: 0.04em; }
+.nav-dark-link.active { color: var(--white); }
+
+/* ─── FORMS ─── */
+.form-card {
+  background: var(--white);
+  border: 1px solid var(--gray);
+  padding: 36px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--gray); }
+
+/* ─── ICONS ─── */
+.icon-showcase { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; }
+.icon-item {
+  background: var(--gray); padding: 24px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  transition: background var(--transition);
+  cursor: default;
+}
+.icon-item:hover { background: var(--graphite); }
+.icon-item:hover svg { stroke: var(--white); }
+.icon-item:hover .icon-name { color: var(--white); }
+.icon-item svg { stroke: var(--graphite); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.icon-name { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; color: var(--neutral); text-transform: uppercase; }
+
+/* ─── PATTERN DARK BG ─── */
+.dark-section { background: var(--navy); padding: 36px; border-radius: var(--radius); }
+.dark-section .section-label { color: var(--cyan); }
+.dark-section .section-title { color: var(--white); }
+
+/* ─── DIVIDER ─── */
+.ds-divider { border: none; border-top: 1px solid var(--gray); margin: 40px 0; }
+
+/* ─── SCROLLBAR ─── */
+aside::-webkit-scrollbar { width: 4px; }
+aside::-webkit-scrollbar-track { background: transparent; }
+aside::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+/* ─── TAG / CHIP ─── */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 100px;
+  font-size: 11px; font-weight: 500;
+  border: 1px solid var(--gray-dark);
+  color: var(--text-body); background: var(--white);
+}
+.chip-active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+.chip-remove { background: none; border: none; cursor: pointer; color: inherit; font-size: 12px; line-height: 1; padding: 0; margin-left: 2px; }
+
+/* ─── TOGGLE ─── */
+.toggle-wrap { display: flex; align-items: center; gap: 12px; }
+.toggle {
+  width: 40px; height: 22px; border-radius: 11px;
+  background: var(--gray-dark); position: relative; cursor: pointer;
+  border: none; transition: background var(--transition);
+}
+.toggle.on { background: var(--blue); }
+.toggle::after {
+  content: ''; position: absolute;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--white); top: 3px; left: 3px;
+  transition: transform var(--transition);
+}
+.toggle.on::after { transform: translateX(18px); }
+.toggle-label { font-size: 13px; font-weight: 500; }
+
+/* ─── CHECKBOX RADIO ─── */
+.check-row { display: flex; flex-direction: column; gap: 10px; }
+.check-item { display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer; }
+input[type="checkbox"], input[type="radio"] {
+  width: 16px; height: 16px;
+  accent-color: var(--blue); cursor: pointer;
+  border-radius: var(--radius);
+}
+
+/* ─── PROGRESS ─── */
+.progress-wrap { display: flex; flex-direction: column; gap: 16px; }
+.progress-item { display: flex; flex-direction: column; gap: 6px; }
+.progress-header { display: flex; justify-content: space-between; align-items: center; }
+.progress-label { font-size: 12px; font-weight: 600; }
+.progress-val { font-size: 12px; font-weight: 700; font-family: monospace; }
+.progress-bar-bg { height: 6px; background: var(--gray); border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+
+/* ─── TOOLTIP DEMO ─── */
+.tooltip-demo { position: relative; display: inline-block; }
+.tooltip-box {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  background: var(--graphite); color: var(--white);
+  font-size: 11px; font-weight: 500; white-space: nowrap;
+  padding: 6px 12px; border-radius: var(--radius);
+}
+.tooltip-box::after {
+  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 5px solid transparent; border-top-color: var(--graphite);
+}
+
+/* ─── MODAL PREVIEW ─── */
+.modal-overlay {
+  background: rgba(17,19,21,0.5);
+  padding: 40px; display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius);
+}
+.modal-box {
+  background: var(--white);
+  border: 1px solid var(--gray);
+  width: 100%; max-width: 440px;
+}
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--gray);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+.modal-close { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--neutral); line-height: 1; }
+.modal-body { padding: 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--gray); display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ─── BREADCRUMB ─── */
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.breadcrumb-item { color: var(--neutral); }
+.breadcrumb-item.active { color: var(--graphite); font-weight: 600; }
+.breadcrumb-sep { color: var(--gray-dark); }
+
+/* ─── PAGINATION ─── */
+.pagination { display: flex; gap: 2px; align-items: center; }
+.page-btn {
+  min-width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: none; border: 1px solid var(--gray-dark);
+  border-radius: var(--radius);
+  font-size: 12px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; transition: all var(--transition);
+  color: var(--text-body);
+}
+.page-btn:hover { background: var(--gray); }
+.page-btn.current { background: var(--blue); border-color: var(--blue); color: var(--white); }
+
+/* ─── BRAND PATTERN ─── */
+.brand-pattern-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.pattern-item { height: 160px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 16px; }
+.pattern-item-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; position: relative; z-index: 1; }
+
+/* ─── LOGO SECTION ─── */
+.logo-showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.logo-card {
+  min-height: 200px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px;
+}
+.logo-h { display: flex; align-items: center; gap: 16px; }
+.logo-h-text { font-size: 18px; font-weight: 300; letter-spacing: 0.22em; }
+.logo-h-divider { width: 1px; height: 28px; }
+
+/* ─── DO / DONT ─── */
+.dodont { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.do-block { padding: 24px; border-top: 3px solid var(--green); background: var(--green-soft); }
+.dont-block { padding: 24px; border-top: 3px solid var(--red); background: var(--red-soft); }
+.dodont-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 12px; }
+.dodont-tag.do { color: var(--green); }
+.dodont-tag.dont { color: var(--red); }
+.dodont-sample { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+.dodont-note { font-size: 11px; color: var(--neutral); }
+
+/* ─── RESPONSIVE HELPERS ─── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+.four-col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside>
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">
+      <svg viewBox="0 0 44 44" fill="none">
+        <line x1="22" y1="3" x2="22" y2="41" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+        <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+        <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+      </svg>
+    </div>
+    <div>
+      <div class="sidebar-logo-text">Инновация ИТ</div>
+      <div class="sidebar-logo-sub">Design System v1.0</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Введение</div>
+    <a href="#hero" class="sidebar-link active"><span class="sidebar-link-dot"></span> Обзор</a>
+    <a href="#logo" class="sidebar-link"><span class="sidebar-link-dot"></span> Логотип</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Фундамент</div>
+    <a href="#colors" class="sidebar-link"><span class="sidebar-link-dot"></span> Цвета</a>
+    <a href="#typography" class="sidebar-link"><span class="sidebar-link-dot"></span> Типографика</a>
+    <a href="#spacing" class="sidebar-link"><span class="sidebar-link-dot"></span> Отступы</a>
+    <a href="#grid" class="sidebar-link"><span class="sidebar-link-dot"></span> Сетка</a>
+    <a href="#icons" class="sidebar-link"><span class="sidebar-link-dot"></span> Иконки</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Компоненты</div>
+    <a href="#buttons" class="sidebar-link"><span class="sidebar-link-dot"></span> Кнопки</a>
+    <a href="#inputs" class="sidebar-link"><span class="sidebar-link-dot"></span> Поля ввода</a>
+    <a href="#badges" class="sidebar-link"><span class="sidebar-link-dot"></span> Бейджи и теги</a>
+    <a href="#alerts" class="sidebar-link"><span class="sidebar-link-dot"></span> Оповещения</a>
+    <a href="#cards" class="sidebar-link"><span class="sidebar-link-dot"></span> Карточки</a>
+    <a href="#tables" class="sidebar-link"><span class="sidebar-link-dot"></span> Таблицы</a>
+    <a href="#controls" class="sidebar-link"><span class="sidebar-link-dot"></span> Управляющие эл.</a>
+    <a href="#nav-comp" class="sidebar-link"><span class="sidebar-link-dot"></span> Навигация</a>
+    <a href="#modal" class="sidebar-link"><span class="sidebar-link-dot"></span> Диалоги</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Паттерны</div>
+    <a href="#forms" class="sidebar-link"><span class="sidebar-link-dot"></span> Формы</a>
+    <a href="#voice" class="sidebar-link"><span class="sidebar-link-dot"></span> Голос бренда</a>
+    <a href="#tokens" class="sidebar-link"><span class="sidebar-link-dot"></span> Токены</a>
+  </div>
+
+  <div class="sidebar-footer">
+    Только для внутреннего использования<br>
+    Брендбук v1.0 · 2026
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main>
+
+<!-- HERO -->
+<section id="hero" class="ds-section" style="background:var(--navy); border-bottom:none; position:relative; overflow:hidden;">
+  <div class="hero-symbol">
+    <svg viewBox="0 0 44 44" fill="none" width="320" height="320">
+      <line x1="22" y1="3" x2="22" y2="41" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+      <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+      <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+    </svg>
+  </div>
+  <div class="hero-tag">Design System</div>
+  <h1 class="hero-title">Система дизайна<br><span>Инновация ИТ</span></h1>
+  <p class="hero-sub">Единый набор принципов, токенов, компонентов и паттернов для создания согласованных цифровых продуктов.</p>
+  <div class="hero-meta">
+    <div><div class="hero-stat-num">48</div><div class="hero-stat-label">Компонентов</div></div>
+    <div><div class="hero-stat-num">12</div><div class="hero-stat-label">Цветовых токенов</div></div>
+    <div><div class="hero-stat-num">6</div><div class="hero-stat-label">Паттернов</div></div>
+    <div><div class="hero-stat-num">1</div><div class="hero-stat-label">Шрифт — Manrope</div></div>
+  </div>
+</section>
+
+<!-- LOGO -->
+<section id="logo" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">01 — Логотип</div>
+    <h2 class="section-title">Применение логотипа</h2>
+    <p class="section-desc">Логотип существует в двух вариантах: горизонтальный (основной) и вертикальный. Минимальный размер — 80px по ширине. Охранная зона — размер символа × 0.5 с каждой стороны.</p>
+  </div>
+
+  <div class="logo-showcase-grid">
+    <div class="logo-card" style="background:var(--white); border:1px solid var(--gray);">
+      <div class="logo-h">
+        <svg viewBox="0 0 44 44" fill="none" width="36" height="36">
+          <line x1="22" y1="3" x2="22" y2="41" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+          <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+          <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+        </svg>
+        <div class="logo-h-divider" style="background:var(--gray-dark);"></div>
+        <div>
+          <div class="logo-h-text" style="color:var(--graphite);">ИННОВАЦИЯ ИТ</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:0.18em;color:var(--neutral);text-transform:uppercase;margin-top:2px;">Information Technologies</div>
+        </div>
+      </div>
+    </div>
+    <div class="logo-card" style="background:var(--navy);">
+      <div class="logo-h">
+        <svg viewBox="0 0 44 44" fill="none" width="36" height="36">
+          <line x1="22" y1="3" x2="22" y2="41" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+          <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+          <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+        </svg>
+        <div class="logo-h-divider" style="background:rgba(255,255,255,0.15);"></div>
+        <div>
+          <div class="logo-h-text" style="color:var(--white);">ИННОВАЦИЯ ИТ</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:0.18em;color:var(--secondary);text-transform:uppercase;margin-top:2px;">Information Technologies</div>
+        </div>
+      </div>
+    </div>
+    <div class="logo-card" style="background:var(--gray);">
+      <div class="logo-h">
+        <svg viewBox="0 0 44 44" fill="none" width="36" height="36">
+          <line x1="22" y1="3" x2="22" y2="41" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+          <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+          <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+        </svg>
+        <div class="logo-h-divider" style="background:var(--gray-dark);"></div>
+        <div>
+          <div class="logo-h-text" style="color:var(--graphite);">ИННОВАЦИЯ ИТ</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:0.18em;color:var(--neutral);text-transform:uppercase;margin-top:2px;">Information Technologies</div>
+        </div>
+      </div>
+    </div>
+    <div class="logo-card" style="background:var(--blue);">
+      <div class="logo-h">
+        <svg viewBox="0 0 44 44" fill="none" width="36" height="36">
+          <line x1="22" y1="3" x2="22" y2="41" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+          <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+          <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+        </svg>
+        <div class="logo-h-divider" style="background:rgba(255,255,255,0.3);"></div>
+        <div>
+          <div class="logo-h-text" style="color:var(--white);">ИННОВАЦИЯ ИТ</div>
+          <div style="font-size:9px;font-weight:600;letter-spacing:0.18em;color:rgba(255,255,255,0.65);text-transform:uppercase;margin-top:2px;">Information Technologies</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <div class="three-col" style="gap:2px; margin-top:0;">
+    <div style="padding:24px; background:var(--green-soft); border-top:3px solid var(--green);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--green);text-transform:uppercase;margin-bottom:10px;">✓ Разрешено</div>
+      <p style="font-size:12px;color:#1A7D54;line-height:1.6;">Использовать на белом, сером, тёмном и синем фоне. Пропорции не менять.</p>
+    </div>
+    <div style="padding:24px; background:var(--red-soft); border-top:3px solid var(--red);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--red);text-transform:uppercase;margin-bottom:10px;">✗ Запрещено</div>
+      <p style="font-size:12px;color:#C0363A;line-height:1.6;">Искажать, поворачивать, менять цвета символа, добавлять обводки, тени или эффекты.</p>
+    </div>
+    <div style="padding:24px; background:var(--gray); border-top:3px solid var(--neutral);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--neutral);text-transform:uppercase;margin-bottom:10px;">↔ Охранная зона</div>
+      <p style="font-size:12px;color:var(--text-body);line-height:1.6;">Зона вокруг логотипа равна высоте символа «×». Ничего не должно пересекать эту зону.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COLORS -->
+<section id="colors" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">02 — Цвета</div>
+    <h2 class="section-title">Цветовая система</h2>
+    <p class="section-desc">Палитра построена на двух тёмных основах, одном светлом фоне и двух акцентных цветах. Дополнительные цвета — только для статусов и графиков.</p>
+  </div>
+
+  <!-- Main palette -->
+  <div class="color-grid">
+    <div class="color-swatch-block" onclick="copyColor('#111315')">
+      <div class="color-swatch-inner" style="background:#111315;">
+        <div class="csw-name" style="color:rgba(255,255,255,0.7);">Graphite Black</div>
+        <div class="csw-hex" style="color:rgba(255,255,255,0.5);">#111315</div>
+      </div>
+    </div>
+    <div class="color-swatch-block" onclick="copyColor('#141B2D')">
+      <div class="color-swatch-inner" style="background:#141B2D;">
+        <div class="csw-name" style="color:rgba(255,255,255,0.7);">Tech Navy</div>
+        <div class="csw-hex" style="color:rgba(255,255,255,0.5);">#141B2D</div>
+      </div>
+    </div>
+    <div class="color-swatch-block" onclick="copyColor('#EEF1F4')">
+      <div class="color-swatch-inner" style="background:#EEF1F4; border:1px solid #D8DCE3;">
+        <div class="csw-name" style="color:#4A5568;">System Gray</div>
+        <div class="csw-hex" style="color:#8A94A6;">#EEF1F4</div>
+      </div>
+    </div>
+    <div class="color-swatch-block" onclick="copyColor('#3A8DFF')">
+      <div class="color-swatch-inner" style="background:#3A8DFF;">
+        <div class="csw-name" style="color:rgba(255,255,255,0.9);">Signal Blue</div>
+        <div class="csw-hex" style="color:rgba(255,255,255,0.65);">#3A8DFF</div>
+      </div>
+    </div>
+    <div class="color-swatch-block" onclick="copyColor('#42D9C8')">
+      <div class="color-swatch-inner" style="background:#42D9C8;">
+        <div class="csw-name" style="color:var(--navy);">Electric Cyan</div>
+        <div class="csw-hex" style="color:rgba(20,27,45,0.6);">#42D9C8</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secondary -->
+  <div class="color-grid" style="margin-top:2px;">
+    <div class="color-swatch-block" onclick="copyColor('#FFFFFF')" style="padding-bottom:50%;">
+      <div class="color-swatch-inner" style="background:#fff; border:1px solid #D8DCE3;">
+        <div class="csw-name" style="color:#111315;">White</div>
+        <div class="csw-hex" style="color:#8A94A6;">#FFFFFF</div>
+      </div>
+    </div>
+    <div class="color-swatch-block" onclick="copyColor('#AEB7C4')" style="padding-bottom:50%;">
+      <div class="color-swatch-inner" style="background:#AEB7C4;">
+        <div class="csw-name" style="color:#fff;">Secondary</div>
+        <div class="csw-hex" style="color:rgba(255,255,255,0.65);">#AEB7C4</div>
+      </div>
+    </div>
+    <div class="color-swatch-block" onclick="copyColor('#8A94A6')" style="padding-bottom:50%;">
+      <div class="color-swatch-inner" style="background:#8A94A6;">
+        <div class="csw-name" style="color:#fff;">Neutral</div>
+        <div class="csw-hex" style="color:rgba(255,255,255,0.7);">#8A94A6</div>
+      </div>
+    </div>
+    <div class="color-swatch-block" onclick="copyColor('#4A5568')" style="padding-bottom:50%;">
+      <div class="color-swatch-inner" style="background:#4A5568;">
+        <div class="csw-name" style="color:rgba(255,255,255,0.8);">Body Text</div>
+        <div class="csw-hex" style="color:rgba(255,255,255,0.5);">#4A5568</div>
+      </div>
+    </div>
+    <div class="color-swatch-block" onclick="copyColor('#D8DCE3')" style="padding-bottom:50%;">
+      <div class="color-swatch-inner" style="background:#D8DCE3; border:1px solid #C5CBD4;">
+        <div class="csw-name" style="color:#4A5568;">Border</div>
+        <div class="csw-hex" style="color:#8A94A6;">#D8DCE3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status palette -->
+  <div style="margin-top:32px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--neutral);margin-bottom:12px;">Статусные цвета — только для оповещений, индикаторов и графиков</div>
+    <div class="status-row">
+      <div class="status-chip" style="background:var(--green-soft);">
+        <div class="status-dot" style="background:#21B573;"></div>
+        <div class="status-cname">Успешно</div>
+        <div class="status-chex">#21B573</div>
+      </div>
+      <div class="status-chip" style="background:var(--yellow-soft);">
+        <div class="status-dot" style="background:#FFB020;"></div>
+        <div class="status-cname">Внимание</div>
+        <div class="status-chex">#FFB020</div>
+      </div>
+      <div class="status-chip" style="background:var(--red-soft);">
+        <div class="status-dot" style="background:#E5484D;"></div>
+        <div class="status-cname">Критично</div>
+        <div class="status-chex">#E5484D</div>
+      </div>
+      <div class="status-chip" style="background:#F5F6F8;">
+        <div class="status-dot" style="background:#8A94A6;"></div>
+        <div class="status-cname">Нейтрально</div>
+        <div class="status-chex">#8A94A6</div>
+      </div>
+      <div class="status-chip" style="background:var(--blue-soft);">
+        <div class="status-dot" style="background:#3A8DFF;"></div>
+        <div class="status-cname">Информация</div>
+        <div class="status-chex">#3A8DFF</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dark / Light themes usage -->
+  <div class="two-col" style="margin-top:40px; gap:2px;">
+    <div style="background:var(--white); border:1px solid var(--gray); padding:32px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--blue);text-transform:uppercase;margin-bottom:20px;">Светлая версия</div>
+      <div style="font-size:20px;font-weight:700;letter-spacing:-0.01em;margin-bottom:8px;color:var(--graphite);">ИТ-решения для бизнеса</div>
+      <div style="font-size:13px;color:var(--text-body);margin-bottom:20px;">Системная интеграция и цифровая инфраструктура.</div>
+      <button class="btn btn-primary">Узнать больше →</button>
+    </div>
+    <div style="background:var(--navy); padding:32px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--cyan);text-transform:uppercase;margin-bottom:20px;">Тёмная версия</div>
+      <div style="font-size:20px;font-weight:700;letter-spacing:-0.01em;margin-bottom:8px;color:var(--white);">ИТ-решения для бизнеса</div>
+      <div style="font-size:13px;color:var(--secondary);margin-bottom:20px;">Системная интеграция и цифровая инфраструктура.</div>
+      <button class="btn btn-cyan">Узнать больше →</button>
+    </div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section id="typography" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">03 — Типографика</div>
+    <h2 class="section-title">Шрифтовая система</h2>
+    <p class="section-desc">Основной шрифт — Manrope. Все веса от Light (300) до ExtraBold (800). Альтернатива для заголовков — Geologica 700/800.</p>
+  </div>
+
+  <!-- Type scale -->
+  <div class="type-scale">
+    <div class="type-row-ds">
+      <span style="font-size:48px;font-weight:800;letter-spacing:-0.03em;line-height:1;">Заголовок H1</span>
+      <span class="type-meta">48px · ExtraBold 800 · ls −3%</span>
+    </div>
+    <div class="type-row-ds">
+      <span style="font-size:32px;font-weight:700;letter-spacing:-0.02em;">Заголовок H2</span>
+      <span class="type-meta">32px · Bold 700 · ls −2%</span>
+    </div>
+    <div class="type-row-ds">
+      <span style="font-size:24px;font-weight:600;">Заголовок H3</span>
+      <span class="type-meta">24px · SemiBold 600</span>
+    </div>
+    <div class="type-row-ds">
+      <span style="font-size:18px;font-weight:600;letter-spacing:-0.01em;">Заголовок H4</span>
+      <span class="type-meta">18px · SemiBold 600 · ls −1%</span>
+    </div>
+    <div class="type-row-ds">
+      <span style="font-size:17px;font-weight:400;color:var(--text-body);">Основной текст — читаемый, спокойный, профессиональный</span>
+      <span class="type-meta">17px · Regular 400 · lh 1.7</span>
+    </div>
+    <div class="type-row-ds">
+      <span style="font-size:15px;font-weight:400;color:var(--text-body);">Текст второго уровня для описаний и вспомогательного контента</span>
+      <span class="type-meta">15px · Regular 400</span>
+    </div>
+    <div class="type-row-ds">
+      <span style="font-size:13px;font-weight:400;color:var(--neutral);">Подписи, таблицы, вспомогательный текст интерфейса</span>
+      <span class="type-meta">13px · Regular 400</span>
+    </div>
+    <div class="type-row-ds">
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);">МЕТКИ, КАТЕГОРИИ, КНОПКИ</span>
+      <span class="type-meta">11px · Bold 700 · ls 14% · CAPS</span>
+    </div>
+    <div class="type-row-ds">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--neutral);">НАИМЕНОВАНИЯ РАЗДЕЛОВ</span>
+      <span class="type-meta">10px · Bold 700 · ls 18% · CAPS</span>
+    </div>
+    <div class="type-row-ds" style="background:var(--gray);">
+      <span style="font-size:13px;font-family:'Courier New',monospace;color:var(--graphite);">Monospace — для кода и токенов: #3A8DFF · 48px · 1.5em</span>
+      <span class="type-meta">Courier New · 13px</span>
+    </div>
+  </div>
+
+  <!-- Weights -->
+  <div style="margin-top:24px;">
+    <div class="component-label">Весовой ряд — Manrope</div>
+    <div class="weight-grid">
+      <div class="weight-card">
+        <div class="weight-sample" style="font-weight:300;">Light</div>
+        <div class="weight-label">300 · Light</div>
+      </div>
+      <div class="weight-card">
+        <div class="weight-sample" style="font-weight:400;">Regular</div>
+        <div class="weight-label">400 · Regular</div>
+      </div>
+      <div class="weight-card">
+        <div class="weight-sample" style="font-weight:600;">SemiBold</div>
+        <div class="weight-label">600 · SemiBold</div>
+      </div>
+      <div class="weight-card">
+        <div class="weight-sample" style="font-weight:800;">ExtraBold</div>
+        <div class="weight-label">800 · ExtraBold</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alt font -->
+  <div style="margin-top:24px; padding:32px; background:var(--navy);">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.16em;color:var(--cyan);text-transform:uppercase;margin-bottom:16px;">Альтернативный заголовочный шрифт</div>
+    <div style="font-size:48px;font-weight:800;letter-spacing:-0.03em;color:var(--white);font-family:var(--font-alt);line-height:1.05;">Geologica — для заголовков</div>
+    <div style="font-size:13px;color:var(--secondary);margin-top:12px;">Используется только для H1–H2 в маркетинговых материалах, когда нужен более выразительный технологичный вид.</div>
+  </div>
+</section>
+
+<!-- SPACING -->
+<section id="spacing" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">04 — Отступы</div>
+    <h2 class="section-title">Пространственная система</h2>
+    <p class="section-desc">Шкала кратна 4px. Ключевые значения — 4, 8, 12, 16, 24, 32, 48, 64, 80, 120px.</p>
+  </div>
+
+  <div class="spacing-grid">
+    <div class="spacing-row"><div class="spacing-bar" style="width:4px; min-height:16px;"></div><div class="spacing-token">--space-1</div><div class="spacing-px">4px</div><div class="spacing-desc">Минимальный зазор, иконки</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:8px; min-height:16px;"></div><div class="spacing-token">--space-2</div><div class="spacing-px">8px</div><div class="spacing-desc">Внутренние зазоры компонентов</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:12px; min-height:16px;"></div><div class="spacing-token">--space-3</div><div class="spacing-px">12px</div><div class="spacing-desc">Gap между элементами</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:16px; min-height:16px;"></div><div class="spacing-token">--space-4</div><div class="spacing-px">16px</div><div class="spacing-desc">Стандартный padding компонентов</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:24px; min-height:16px;"></div><div class="spacing-token">--space-6</div><div class="spacing-px">24px</div><div class="spacing-desc">Padding карточек, секций списков</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:32px; min-height:16px;"></div><div class="spacing-token">--space-8</div><div class="spacing-px">32px</div><div class="spacing-desc">Отступ между блоками</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:48px; min-height:16px;"></div><div class="spacing-token">--space-12</div><div class="spacing-px">48px</div><div class="spacing-desc">Между группами компонентов</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:64px; min-height:16px;"></div><div class="spacing-token">--space-16</div><div class="spacing-px">64px</div><div class="spacing-desc">Горизонтальный padding страниц</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:80px; min-height:16px;"></div><div class="spacing-token">--space-20</div><div class="spacing-px">80px</div><div class="spacing-desc">Вертикальные секции</div></div>
+    <div class="spacing-row"><div class="spacing-bar" style="width:120px; min-height:16px;"></div><div class="spacing-token">--space-30</div><div class="spacing-px">120px</div><div class="spacing-desc">Hero-секции, крупные блоки</div></div>
+  </div>
+
+  <!-- Border radius note -->
+  <div style="margin-top:32px; padding:24px; background:var(--gray); display:flex; gap:32px; align-items:center;">
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--blue);text-transform:uppercase;margin-bottom:8px;">Скругление (border-radius)</div>
+      <div style="font-size:13px;color:var(--text-body);">Все компоненты используют <code style="background:var(--white);padding:2px 6px;border-radius:2px;font-family:monospace;font-size:11px;">border-radius: 2px</code> — почти квадратные углы. Это часть DNA бренда: технологичность, точность, отсутствие «мягкости».</div>
+    </div>
+    <div style="display:flex; gap:12px; align-items:center; flex-shrink:0;">
+      <div style="width:40px;height:40px;background:var(--blue); border-radius:2px;"></div>
+      <div style="font-size:11px;color:var(--neutral);">2px</div>
+      <div style="width:40px;height:40px;background:var(--blue); border-radius:0;"></div>
+      <div style="font-size:11px;color:var(--neutral);">0px</div>
+      <div style="width:40px;height:40px;background:var(--gray-dark); border-radius:20px; display:flex;align-items:center;justify-content:center;">
+        <div style="font-size:9px;color:var(--red);font-weight:700;">✗</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRID -->
+<section id="grid" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">05 — Сетка</div>
+    <h2 class="section-title">Макетная сетка</h2>
+    <p class="section-desc">12-колоночная сетка. Гаттер 24px. Боковые поля 64px для desktop, 24px для mobile. Gap между блоками — 2px (фирменный приём бренда).</p>
+  </div>
+
+  <div class="grid-demo">
+    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+    <div class="grid-col"></div><div class="grid-col"></div><div class="grid-col"></div>
+  </div>
+
+  <div style="margin-top:16px; display:grid; grid-template-columns: repeat(3, 1fr); gap:2px;">
+    <div style="padding:20px; background:rgba(58,141,255,0.08); border:1px solid rgba(58,141,255,0.2);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--blue);text-transform:uppercase;margin-bottom:8px;">12 колонок</div>
+      <div style="font-size:12px;color:var(--text-body);">1280px max-width · 64px горизонтальный padding</div>
+    </div>
+    <div style="padding:20px; background:rgba(58,141,255,0.08); border:1px solid rgba(58,141,255,0.2);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--blue);text-transform:uppercase;margin-bottom:8px;">Гаттер 24px</div>
+      <div style="font-size:12px;color:var(--text-body);">Стандартный отступ между колонками в сетке</div>
+    </div>
+    <div style="padding:20px; background:rgba(58,141,255,0.08); border:1px solid rgba(58,141,255,0.2);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--blue);text-transform:uppercase;margin-bottom:8px;">Gap 2px</div>
+      <div style="font-size:12px;color:var(--text-body);">Зазор между крупными блоками страницы — фирменный приём</div>
+    </div>
+  </div>
+
+  <!-- Grid usage examples -->
+  <div style="margin-top:24px; padding:24px; background:var(--gray);">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--neutral);text-transform:uppercase;margin-bottom:16px;">Типовые раскладки</div>
+    <div style="display:grid; grid-template-columns:repeat(12,1fr); gap:8px; margin-bottom:10px;">
+      <div style="grid-column:span 8; background:var(--blue);opacity:0.7;height:24px;border-radius:var(--radius);"></div>
+      <div style="grid-column:span 4; background:var(--secondary);opacity:0.5;height:24px;border-radius:var(--radius);"></div>
+    </div>
+    <div style="font-size:11px;color:var(--neutral);margin-bottom:16px;">8 + 4 — Основной контент + сайдбар</div>
+    <div style="display:grid; grid-template-columns:repeat(12,1fr); gap:8px; margin-bottom:10px;">
+      <div style="grid-column:span 4; background:var(--blue);opacity:0.7;height:24px;border-radius:var(--radius);"></div>
+      <div style="grid-column:span 4; background:var(--blue);opacity:0.7;height:24px;border-radius:var(--radius);"></div>
+      <div style="grid-column:span 4; background:var(--blue);opacity:0.7;height:24px;border-radius:var(--radius);"></div>
+    </div>
+    <div style="font-size:11px;color:var(--neutral);">4 + 4 + 4 — Три колонки равные</div>
+  </div>
+</section>
+
+<!-- ICONS -->
+<section id="icons" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">06 — Иконки</div>
+    <h2 class="section-title">Система иконографики</h2>
+    <p class="section-desc">Линейные иконки, толщина линии 1.5px, stroke-linecap: round. Размеры: 16px (интерфейс), 24px (кнопки), 32px (карточки), 48px (иллюстрации).</p>
+  </div>
+
+  <div class="icon-showcase">
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="8" rx="2"/><rect x="4" y="14" width="24" height="8" rx="2"/><circle cx="26" cy="8" r="1.5" fill="#111315" stroke="none"/><circle cx="26" cy="18" r="1.5" fill="#111315" stroke="none"/></svg>
+      <span class="icon-name">Серверы</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><path d="M16 4 L27 8 L27 17 C27 23 16 28 16 28 C16 28 5 23 5 17 L5 8 Z"/><polyline points="11,16 14,19 21,12"/></svg>
+      <span class="icon-name">Безопасность</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="3"/><circle cx="6" cy="8" r="2.5"/><circle cx="26" cy="8" r="2.5"/><circle cx="6" cy="24" r="2.5"/><circle cx="26" cy="24" r="2.5"/><line x1="13" y1="14" x2="8" y2="10"/><line x1="19" y1="14" x2="24" y2="10"/><line x1="13" y1="18" x2="8" y2="22"/><line x1="19" y1="18" x2="24" y2="22"/></svg>
+      <span class="icon-name">Сети</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><polyline points="11,10 5,16 11,22"/><polyline points="21,10 27,16 21,22"/><line x1="18" y1="8" x2="14" y2="24"/></svg>
+      <span class="icon-name">Разработка</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><polyline points="5,22 11,16 16,19 22,11 27,14"/><line x1="5" y1="26" x2="27" y2="26"/></svg>
+      <span class="icon-name">Аналитика</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><rect x="4" y="12" width="10" height="8" rx="2"/><rect x="18" y="12" width="10" height="8" rx="2"/><line x1="14" y1="16" x2="18" y2="16"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
+      <span class="icon-name">Интеграции</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 8 16 A 10 10 0 1 1 16 26"/><polyline points="13,22 16,26 20,22"/></svg>
+      <span class="icon-name">Автоматиз.</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M 6 16 A 10 10 0 0 1 26 16"/><rect x="4" y="16" width="5" height="9" rx="2.5"/><rect x="23" y="16" width="5" height="9" rx="2.5"/><path d="M 28 21 Q 28 28 20 28"/></svg>
+      <span class="icon-name">Поддержка</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><rect x="6" y="4" width="20" height="24" rx="2"/><line x1="10" y1="10" x2="22" y2="10"/><line x1="10" y1="14" x2="22" y2="14"/><line x1="10" y1="18" x2="18" y2="18"/></svg>
+      <span class="icon-name">Документы</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="11"/><polyline points="16,9 16,16 21,21"/></svg>
+      <span class="icon-name">Время</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><path d="M4 28 L4 6 L28 6 L28 22 L10 22 Z"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+      <span class="icon-name">Чат</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="10" r="5"/><path d="M6 28 C6 22 26 22 26 28"/></svg>
+      <span class="icon-name">Пользователь</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="11"/><line x1="16" y1="11" x2="16" y2="11"/><line x1="16" y1="15" x2="16" y2="22"/></svg>
+      <span class="icon-name">Инфо</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><polyline points="5,16 12,23 27,9"/></svg>
+      <span class="icon-name">Готово</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><line x1="8" y1="8" x2="24" y2="24"/><line x1="24" y1="8" x2="8" y2="24"/></svg>
+      <span class="icon-name">Закрыть</span>
+    </div>
+    <div class="icon-item">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="14" cy="14" r="8"/><line x1="20" y1="20" x2="27" y2="27"/></svg>
+      <span class="icon-name">Поиск</span>
+    </div>
+  </div>
+
+  <!-- Icon sizes -->
+  <div style="margin-top:24px; display:flex; gap:32px; align-items:flex-end; padding:24px; background:var(--gray);">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <svg width="16" height="16" viewBox="0 0 32 32" fill="none" stroke="#3A8DFF" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="8"/><line x1="20" y1="20" x2="27" y2="27"/></svg>
+      <div style="font-size:10px;color:var(--neutral);">16px</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke="#3A8DFF" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="8"/><line x1="20" y1="20" x2="27" y2="27"/></svg>
+      <div style="font-size:10px;color:var(--neutral);">24px</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="#3A8DFF" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="8"/><line x1="20" y1="20" x2="27" y2="27"/></svg>
+      <div style="font-size:10px;color:var(--neutral);">32px</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <svg width="48" height="48" viewBox="0 0 32 32" fill="none" stroke="#3A8DFF" stroke-width="1.5" stroke-linecap="round"><circle cx="14" cy="14" r="8"/><line x1="20" y1="20" x2="27" y2="27"/></svg>
+      <div style="font-size:10px;color:var(--neutral);">48px</div>
+    </div>
+    <div style="margin-left:24px; font-size:12px; color:var(--text-body); max-width:300px; line-height:1.6;">
+      <strong>Правила:</strong> stroke-width: 1.5px · stroke-linecap: round · fill: none. Иконки монохромны: graphite на светлом, white/blue/cyan на тёмном фоне.
+    </div>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section id="buttons" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">07 — Компоненты · Кнопки</div>
+    <h2 class="section-title">Кнопки</h2>
+    <p class="section-desc">Иерархия кнопок: Primary → Secondary → Ghost. Текст кнопок — uppercase, 11–12px, letter-spacing 0.08em. Радиус — 2px.</p>
+  </div>
+
+  <div class="component-group">
+    <div class="component-label">Primary — основное действие</div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-sm">Действие →</button>
+      <button class="btn btn-primary">Обсудить проект →</button>
+      <button class="btn btn-primary btn-lg">Начать сотрудничество →</button>
+      <button class="btn btn-primary" disabled>Недоступно</button>
+    </div>
+  </div>
+
+  <div class="component-group">
+    <div class="component-label">Secondary — второстепенное действие</div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-sm">Отмена</button>
+      <button class="btn btn-secondary">Подробнее</button>
+      <button class="btn btn-secondary btn-lg">Скачать документ</button>
+      <button class="btn btn-secondary" disabled>Недоступно</button>
+    </div>
+  </div>
+
+  <div class="component-group">
+    <div class="component-label">Ghost — текстовое действие</div>
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm">Назад</button>
+      <button class="btn btn-ghost">Узнать больше</button>
+      <button class="btn btn-ghost btn-lg">Перейти к разделу</button>
+    </div>
+  </div>
+
+  <div class="component-group">
+    <div class="component-label">Dark · Cyan · Danger</div>
+    <div class="btn-row">
+      <button class="btn btn-dark">Тёмная кнопка</button>
+      <button class="btn btn-cyan">Акцентная →</button>
+      <button class="btn btn-danger">Удалить</button>
+    </div>
+  </div>
+
+  <!-- Buttons on dark bg -->
+  <div style="padding:32px; background:var(--navy); display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+    <button class="btn btn-primary">Обсудить проект →</button>
+    <button class="btn btn-cyan">Узнать больше →</button>
+    <button class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.25);color:white;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:11px 22px;">Смотреть →</button>
+    <span style="font-size:11px;color:var(--neutral);margin-left:12px;">На тёмном фоне</span>
+  </div>
+
+  <!-- Icon buttons -->
+  <div style="margin-top:24px;">
+    <div class="component-label">С иконкой</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" style="gap:10px;">
+        <svg width="14" height="14" viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M4 28 L4 6 L28 6 L28 22 L10 22 Z"/></svg>
+        Написать нам
+      </button>
+      <button class="btn btn-secondary" style="gap:10px;">
+        <svg width="14" height="14" viewBox="0 0 32 32" fill="none" stroke="#111315" stroke-width="2" stroke-linecap="round"><rect x="6" y="4" width="20" height="24" rx="2"/><line x1="10" y1="10" x2="22" y2="10"/></svg>
+        Скачать PDF
+      </button>
+      <button class="btn btn-ghost" style="gap:8px;">
+        Смотреть все
+        <svg width="12" height="12" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="16" x2="27" y2="16"/><polyline points="20,9 27,16 20,23"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- INPUTS -->
+<section id="inputs" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">08 — Поля ввода</div>
+    <h2 class="section-title">Поля и формы</h2>
+    <p class="section-desc">Высота поля — 40px. Padding 10px 14px. Border 1px solid #D8DCE3. Focus: border-color blue, box-shadow 3px rgba(blue, 0.12).</p>
+  </div>
+
+  <div class="input-grid">
+    <div class="input-group">
+      <label class="input-label">Имя</label>
+      <input type="text" placeholder="Иван Иванов">
+      <span class="input-hint">Укажите имя и фамилию</span>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Email</label>
+      <input type="email" placeholder="ivan@company.ru">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Телефон (фокус)</label>
+      <input type="text" placeholder="+7 (___) ___-__-__" style="border-color:var(--blue);box-shadow:0 0 0 3px rgba(58,141,255,0.12);">
+    </div>
+    <div class="input-group">
+      <label class="input-label">Компания (ошибка)</label>
+      <input type="text" class="inp-error" value="ООО">
+      <span class="input-error-msg">Введите полное наименование организации</span>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Тип услуги</label>
+      <select>
+        <option value="">Выберите услугу...</option>
+        <option>Серверная инфраструктура</option>
+        <option>Кибербезопасность</option>
+        <option>Сетевые решения</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label class="input-label">Неактивное поле</label>
+      <input type="text" value="Заблокировано" disabled>
+      <span class="input-hint">Это поле недоступно для редактирования</span>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;">
+    <div class="input-group">
+      <label class="input-label">Сообщение</label>
+      <textarea rows="4" placeholder="Опишите ваш проект — объём, сроки, требования..."></textarea>
+      <span class="input-hint">Минимум 20 символов</span>
+    </div>
+  </div>
+
+  <!-- Search input -->
+  <div style="margin-top:24px;">
+    <div class="component-label">Поиск</div>
+    <div style="position:relative; max-width:400px;">
+      <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;" width="16" height="16" viewBox="0 0 32 32" fill="none" stroke="#8A94A6" stroke-width="2" stroke-linecap="round"><circle cx="14" cy="14" r="8"/><line x1="20" y1="20" x2="27" y2="27"/></svg>
+      <input type="text" placeholder="Поиск по разделам..." style="padding-left:38px;">
+    </div>
+  </div>
+</section>
+
+<!-- BADGES -->
+<section id="badges" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">09 — Бейджи и теги</div>
+    <h2 class="section-title">Бейджи, статусы, чипы</h2>
+  </div>
+
+  <div class="component-group">
+    <div class="component-label">Статусные бейджи</div>
+    <div class="btn-row" style="flex-wrap:wrap;">
+      <span class="badge badge-blue badge-dot">Информация</span>
+      <span class="badge badge-green badge-dot">Выполнено</span>
+      <span class="badge badge-yellow badge-dot">В работе</span>
+      <span class="badge badge-red badge-dot">Критично</span>
+      <span class="badge badge-gray badge-dot">Черновик</span>
+      <span class="badge badge-cyan badge-dot">Новое</span>
+    </div>
+  </div>
+
+  <div class="component-group">
+    <div class="component-label">Декоративные бейджи</div>
+    <div class="btn-row" style="flex-wrap:wrap;">
+      <span class="badge badge-dark">SLA 99.9%</span>
+      <span class="badge badge-blue">ИТ-инфраструктура</span>
+      <span class="badge badge-outline">Подробнее</span>
+      <span class="badge badge-green">200+ проектов</span>
+      <span class="badge badge-gray">Кибербезопасность</span>
+    </div>
+  </div>
+
+  <div class="component-group">
+    <div class="component-label">Теги / чипы (фильтры)</div>
+    <div class="btn-row" style="flex-wrap:wrap;">
+      <span class="chip chip-active">Все услуги</span>
+      <span class="chip">Инфраструктура</span>
+      <span class="chip">Безопасность<button class="chip-remove">×</button></span>
+      <span class="chip">Аналитика</span>
+      <span class="chip">Облако<button class="chip-remove">×</button></span>
+    </div>
+  </div>
+
+  <!-- Number badges -->
+  <div class="component-group">
+    <div class="component-label">Счётчики и нотификации</div>
+    <div class="btn-row">
+      <div style="position:relative;display:inline-flex;">
+        <button class="btn btn-secondary">Уведомления</button>
+        <span style="position:absolute;top:-6px;right:-6px;background:var(--red);color:white;font-size:9px;font-weight:800;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;">3</span>
+      </div>
+      <div style="position:relative;display:inline-flex;">
+        <button class="btn btn-secondary">Задачи</button>
+        <span style="position:absolute;top:-6px;right:-6px;background:var(--blue);color:white;font-size:9px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid white;">12</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALERTS -->
+<section id="alerts" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">10 — Оповещения</div>
+    <h2 class="section-title">Алерты и уведомления</h2>
+    <p class="section-desc">Четыре типа: info, success, warning, danger. Левая граница 3px — ключевой цвет статуса. Заголовок опционален.</p>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-icon">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="16" cy="16" r="11"/><line x1="16" y1="11" x2="16" y2="11" stroke-width="3"/><line x1="16" y1="15" x2="16" y2="22"/></svg>
+    </div>
+    <div>
+      <div class="alert-title">Плановые технические работы</div>
+      <div class="alert-body">18 мая с 02:00 до 04:00 MSK будет проведено плановое обслуживание серверов. Возможны кратковременные перебои в работе сервисов.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-success">
+    <div class="alert-icon">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="16" cy="16" r="11"/><polyline points="10,16 14,20 22,12"/></svg>
+    </div>
+    <div>
+      <div class="alert-title">Конфигурация применена успешно</div>
+      <div class="alert-body">Все 12 серверов синхронизированы. Время применения — 00:03:47. SLA в норме: 99.97%.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warning">
+    <div class="alert-icon">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 5 L29 27 L3 27 Z"/><line x1="16" y1="14" x2="16" y2="20"/><circle cx="16" cy="23" r="0.5" fill="currentColor" stroke-width="2"/></svg>
+    </div>
+    <div>
+      <div class="alert-title">Высокая нагрузка на CPU</div>
+      <div class="alert-body">Узел srv-03 загружен на 87%. Рекомендуется балансировка нагрузки или масштабирование.</div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger">
+    <div class="alert-icon">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="16" cy="16" r="11"/><line x1="11" y1="11" x2="21" y2="21"/><line x1="21" y1="11" x2="11" y2="21"/></svg>
+    </div>
+    <div>
+      <div class="alert-title">Критическая ошибка — сервис недоступен</div>
+      <div class="alert-body">Узел db-master не отвечает с 14:23. Автоматический фейловер запущен. Немедленно свяжитесь с NOC: +7 (800) 000-00-01.</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div style="margin-top:24px;">
+    <div class="component-label">Toast-уведомления</div>
+    <div style="display:flex; flex-direction:column; gap:8px; max-width:360px;">
+      <div style="background:var(--graphite);color:white;padding:12px 16px;border-radius:var(--radius);display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="font-size:13px;">Задача создана успешно</span>
+        <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--cyan);text-transform:uppercase;cursor:pointer;white-space:nowrap;">Открыть →</span>
+      </div>
+      <div style="background:var(--green-soft);border:1px solid var(--green);color:#1A7D54;padding:12px 16px;border-radius:var(--radius);font-size:13px;">
+        Файл загружен · backup-2026-05.tar.gz
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARDS -->
+<section id="cards" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">11 — Карточки</div>
+    <h2 class="section-title">Карточки и блоки</h2>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="component-label">Статистические карточки</div>
+  <div class="stat-card-grid" style="margin-bottom:32px;">
+    <div class="stat-card">
+      <div class="stat-card-label">Проектов завершено</div>
+      <div class="stat-card-num">200+</div>
+      <div class="stat-card-delta delta-pos">↑ +18 за год</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Аптайм SLA</div>
+      <div class="stat-card-num">99.9%</div>
+      <div class="stat-card-delta delta-pos">↑ +0.02% к пред. кв.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Инцидентов</div>
+      <div class="stat-card-num">2</div>
+      <div class="stat-card-delta delta-pos">↓ −8 к пред. кв.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Поддержка</div>
+      <div class="stat-card-num">24/7</div>
+      <div class="stat-card-delta" style="color:var(--neutral);">NOC, L1–L3</div>
+    </div>
+  </div>
+
+  <!-- Content cards -->
+  <div class="component-label">Контентные карточки</div>
+  <div class="card-grid" style="gap:2px;">
+    <div class="card">
+      <div class="card-tag" style="color:var(--blue);">Инфраструктура</div>
+      <h3>Серверная платформа</h3>
+      <p class="card-body-text" style="font-size:13px;color:var(--text-body);">Проектируем и внедряем серверную инфраструктуру под нагрузку вашего бизнеса. SLA 99.9%. Поддержка 24/7.</p>
+      <div style="margin-top:16px;"><button class="btn btn-ghost btn-sm" style="padding:6px 0;">Подробнее →</button></div>
+    </div>
+    <div class="card-dark">
+      <div class="card-tag" style="color:var(--cyan);">Безопасность</div>
+      <h3 style="color:white;">Кибербезопасность</h3>
+      <p class="card-body-text" style="color:var(--secondary);">Аудит, защита периметра, мониторинг угроз 24/7. Соответствие 152-ФЗ и ГОСТ Р 57580.</p>
+      <div style="margin-top:16px;"><button class="btn btn-cyan btn-sm">Подробнее →</button></div>
+    </div>
+    <div class="card-gray">
+      <div class="card-tag" style="color:var(--neutral);">Аналитика</div>
+      <h3>BI и отчётность</h3>
+      <p class="card-body-text" style="color:var(--text-body);">Внедрение систем бизнес-аналитики, построение дашбордов и автоматизация отчётности.</p>
+      <div style="margin-top:16px;"><button class="btn btn-secondary btn-sm">Подробнее →</button></div>
+    </div>
+    <div class="card-accent">
+      <div class="card-tag" style="color:rgba(255,255,255,0.65);">Акция</div>
+      <h3 style="color:white;">Бесплатный аудит</h3>
+      <p class="card-body-text" style="color:rgba(255,255,255,0.8);">Проведём аудит текущей инфраструктуры и дадим рекомендации по оптимизации — бесплатно.</p>
+      <div style="margin-top:16px;"><button class="btn btn-dark btn-sm">Записаться →</button></div>
+    </div>
+  </div>
+
+  <!-- Team card -->
+  <div style="margin-top:24px;">
+    <div class="component-label">Карточка сотрудника</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;">
+      <div style="background:var(--white);border:1px solid var(--gray);padding:24px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:var(--radius);background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:white;flex-shrink:0;">АК</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;">Александр Козлов</div>
+            <div style="font-size:11px;color:var(--neutral);margin-top:1px;">Архитектор инфраструктуры</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-body);line-height:1.6;margin-bottom:12px;">12 лет в ИТ. Специализация: высоконагруженные системы, Kubernetes, VMware.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-gray" style="font-size:9px;">Kubernetes</span>
+          <span class="badge badge-gray" style="font-size:9px;">VMware</span>
+          <span class="badge badge-gray" style="font-size:9px;">Cisco</span>
+        </div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--gray);padding:24px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:var(--radius);background:var(--cyan);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--navy);flex-shrink:0;">МС</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;">Мария Смирнова</div>
+            <div style="font-size:11px;color:var(--neutral);margin-top:1px;">Руководитель SOC</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-body);line-height:1.6;margin-bottom:12px;">10 лет в кибербезопасности. CISSP, CEH. Руководит командой из 8 аналитиков.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-gray" style="font-size:9px;">CISSP</span>
+          <span class="badge badge-gray" style="font-size:9px;">SIEM</span>
+          <span class="badge badge-red" style="font-size:9px;">SOC</span>
+        </div>
+      </div>
+      <div style="background:var(--navy);padding:24px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:var(--radius);background:rgba(58,141,255,0.2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--blue);flex-shrink:0;">ДВ</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:white;">Дмитрий Волков</div>
+            <div style="font-size:11px;color:var(--secondary);margin-top:1px;">DevOps-инженер</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--secondary);line-height:1.6;margin-bottom:12px;">8 лет. CI/CD, IaC, мониторинг. Автор 40+ внутренних Ansible-ролей.</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-blue" style="font-size:9px;">Ansible</span>
+          <span class="badge badge-cyan" style="font-size:9px;">Terraform</span>
+          <span class="badge badge-gray" style="font-size:9px;">GitLab CI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABLES -->
+<section id="tables" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">12 — Таблицы</div>
+    <h2 class="section-title">Таблицы данных</h2>
+  </div>
+
+  <div style="overflow:auto;">
+    <table class="ds-table">
+      <thead>
+        <tr>
+          <th>Сервер</th>
+          <th>Статус</th>
+          <th>CPU</th>
+          <th>RAM</th>
+          <th>Аптайм</th>
+          <th>Последнее событие</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span style="font-family:monospace;font-size:12px;font-weight:600;">srv-web-01</span></td>
+          <td><span class="badge badge-green badge-dot" style="font-size:9px;">Работает</span></td>
+          <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:60px;height:4px;background:var(--gray);border-radius:2px;overflow:hidden;"><div style="width:23%;height:100%;background:var(--green);"></div></div><span style="font-size:12px;font-family:monospace;">23%</span></div></td>
+          <td><span style="font-size:12px;font-family:monospace;">4.2 / 16 GB</span></td>
+          <td><span style="font-size:12px;font-family:monospace;">99.97%</span></td>
+          <td style="font-size:12px;color:var(--neutral);">2 мин. назад</td>
+          <td><button class="copy-btn">Детали</button></td>
+        </tr>
+        <tr>
+          <td><span style="font-family:monospace;font-size:12px;font-weight:600;">db-master</span></td>
+          <td><span class="badge badge-yellow badge-dot" style="font-size:9px;">Нагрузка</span></td>
+          <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:60px;height:4px;background:var(--gray);border-radius:2px;overflow:hidden;"><div style="width:87%;height:100%;background:var(--yellow);"></div></div><span style="font-size:12px;font-family:monospace;">87%</span></div></td>
+          <td><span style="font-size:12px;font-family:monospace;">28.1 / 32 GB</span></td>
+          <td><span style="font-size:12px;font-family:monospace;">99.82%</span></td>
+          <td style="font-size:12px;color:var(--neutral);">14 мин. назад</td>
+          <td><button class="copy-btn">Детали</button></td>
+        </tr>
+        <tr>
+          <td><span style="font-family:monospace;font-size:12px;font-weight:600;">srv-backup-01</span></td>
+          <td><span class="badge badge-red badge-dot" style="font-size:9px;">Недоступен</span></td>
+          <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:60px;height:4px;background:var(--gray);border-radius:2px;overflow:hidden;"><div style="width:0%;height:100%;background:var(--red);"></div></div><span style="font-size:12px;font-family:monospace;">—</span></div></td>
+          <td><span style="font-size:12px;font-family:monospace;">—</span></td>
+          <td><span style="font-size:12px;font-family:monospace;color:var(--red);">0%</span></td>
+          <td style="font-size:12px;color:var(--red);">3 часа назад</td>
+          <td><button class="copy-btn">Детали</button></td>
+        </tr>
+        <tr>
+          <td><span style="font-family:monospace;font-size:12px;font-weight:600;">srv-app-02</span></td>
+          <td><span class="badge badge-blue badge-dot" style="font-size:9px;">Обновление</span></td>
+          <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:60px;height:4px;background:var(--gray);border-radius:2px;overflow:hidden;"><div style="width:45%;height:100%;background:var(--blue);"></div></div><span style="font-size:12px;font-family:monospace;">45%</span></div></td>
+          <td><span style="font-size:12px;font-family:monospace;">12.0 / 32 GB</span></td>
+          <td><span style="font-size:12px;font-family:monospace;">99.91%</span></td>
+          <td style="font-size:12px;color:var(--neutral);">Сейчас</td>
+          <td><button class="copy-btn">Детали</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid var(--gray);">
+    <div style="font-size:12px;color:var(--neutral);">Показано 4 из 48 серверов</div>
+    <div class="pagination">
+      <button class="page-btn">←</button>
+      <button class="page-btn current">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <span style="font-size:12px;color:var(--neutral);padding:0 8px;">...</span>
+      <button class="page-btn">12</button>
+      <button class="page-btn">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTROLS -->
+<section id="controls" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">13 — Управляющие элементы</div>
+    <h2 class="section-title">Переключатели и чекбоксы</h2>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="component-label">Чекбоксы</div>
+      <div class="check-row">
+        <label class="check-item"><input type="checkbox" checked> Уведомления о сбоях (email)</label>
+        <label class="check-item"><input type="checkbox" checked> SMS при критических событиях</label>
+        <label class="check-item"><input type="checkbox"> Еженедельные отчёты</label>
+        <label class="check-item"><input type="checkbox" disabled> Telegram-бот (недоступно)</label>
+      </div>
+    </div>
+
+    <div>
+      <div class="component-label">Радио-кнопки</div>
+      <div class="check-row">
+        <label class="check-item"><input type="radio" name="sla" checked> SLA Standard (99.5%)</label>
+        <label class="check-item"><input type="radio" name="sla"> SLA Business (99.9%)</label>
+        <label class="check-item"><input type="radio" name="sla"> SLA Enterprise (99.99%)</label>
+      </div>
+    </div>
+
+    <div>
+      <div class="component-label">Переключатели</div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="toggle-wrap">
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          <span class="toggle-label">Мониторинг 24/7 включён</span>
+        </div>
+        <div class="toggle-wrap">
+          <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          <span class="toggle-label">Автоматический бэкап</span>
+        </div>
+        <div class="toggle-wrap">
+          <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          <span class="toggle-label">Firewall активен</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="component-label">Прогресс-бары</div>
+      <div class="progress-wrap">
+        <div class="progress-item">
+          <div class="progress-header">
+            <span class="progress-label">CPU</span>
+            <span class="progress-val" style="color:var(--green);">23%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:23%;background:var(--green);"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-header">
+            <span class="progress-label">RAM</span>
+            <span class="progress-val" style="color:var(--yellow);">78%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:78%;background:var(--yellow);"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-header">
+            <span class="progress-label">Disk</span>
+            <span class="progress-val" style="color:var(--red);">92%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:92%;background:var(--red);"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-header">
+            <span class="progress-label">Загрузка проекта</span>
+            <span class="progress-val" style="color:var(--blue);">60%</span>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:60%;background:var(--blue);"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tooltip -->
+  <div style="margin-top:32px;">
+    <div class="component-label">Тултип и хлебные крошки</div>
+    <div style="display:flex; gap:32px; align-items:center; flex-wrap:wrap;">
+      <div class="tooltip-demo">
+        <button class="btn btn-secondary" style="position:relative;">
+          Серверы
+        </button>
+        <div class="tooltip-box">8 узлов · 2 предупреждения</div>
+      </div>
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">Главная</span>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-item">Инфраструктура</span>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-item">Серверы</span>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-item active">srv-web-01</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAVIGATION -->
+<section id="nav-comp" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">14 — Навигация</div>
+    <h2 class="section-title">Навигационные компоненты</h2>
+  </div>
+
+  <div class="component-label">Светлая навигация (основная)</div>
+  <div class="nav-demo" style="margin-bottom:2px;">
+    <div class="nav-demo-logo">
+      <svg viewBox="0 0 44 44" fill="none">
+        <line x1="22" y1="3" x2="22" y2="41" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+        <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+        <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="#111315" stroke-width="4.5" stroke-linecap="butt"/>
+      </svg>
+      <span style="font-size:11px;font-weight:800;letter-spacing:0.16em;color:var(--graphite);">ИННОВАЦИЯ ИТ</span>
+    </div>
+    <div class="nav-demo-links">
+      <a class="nav-demo-link active" href="#">Услуги</a>
+      <a class="nav-demo-link" href="#">Проекты</a>
+      <a class="nav-demo-link" href="#">О нас</a>
+      <a class="nav-demo-link" href="#">Контакты</a>
+    </div>
+    <div class="nav-demo-actions">
+      <button class="btn btn-secondary btn-sm">Войти</button>
+      <button class="btn btn-primary btn-sm">Обсудить проект →</button>
+    </div>
+  </div>
+
+  <div class="component-label" style="margin-top:24px;">Тёмная навигация</div>
+  <div class="nav-dark-demo" style="margin-bottom:2px;">
+    <div class="nav-demo-logo">
+      <svg viewBox="0 0 44 44" fill="none" width="20" height="20">
+        <line x1="22" y1="3" x2="22" y2="41" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+        <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+        <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="white" stroke-width="4.5" stroke-linecap="butt"/>
+      </svg>
+      <span style="font-size:11px;font-weight:800;letter-spacing:0.16em;color:white;">ИННОВАЦИЯ ИТ</span>
+    </div>
+    <div class="nav-demo-links">
+      <a class="nav-dark-link active" href="#">Услуги</a>
+      <a class="nav-dark-link" href="#">Проекты</a>
+      <a class="nav-dark-link" href="#">О нас</a>
+      <a class="nav-dark-link" href="#">Контакты</a>
+    </div>
+    <div class="nav-demo-actions">
+      <button class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:white;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:7px 16px;">Войти</button>
+      <button class="btn btn-cyan btn-sm">Обсудить →</button>
+    </div>
+  </div>
+
+  <!-- Tab nav -->
+  <div style="margin-top:24px;">
+    <div class="component-label">Табы</div>
+    <div style="display:flex;gap:0;border-bottom:2px solid var(--gray);">
+      <button onclick="setTab(this,0)" class="tab-btn tab-active" style="padding:10px 20px;font-size:12px;font-weight:600;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid var(--blue);margin-bottom:-2px;color:var(--blue);cursor:pointer;font-family:var(--font);">Серверы</button>
+      <button onclick="setTab(this,1)" class="tab-btn" style="padding:10px 20px;font-size:12px;font-weight:600;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--neutral);cursor:pointer;font-family:var(--font);">Сети</button>
+      <button onclick="setTab(this,2)" class="tab-btn" style="padding:10px 20px;font-size:12px;font-weight:600;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--neutral);cursor:pointer;font-family:var(--font);">Безопасность</button>
+      <button onclick="setTab(this,3)" class="tab-btn" style="padding:10px 20px;font-size:12px;font-weight:600;letter-spacing:0.06em;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--neutral);cursor:pointer;font-family:var(--font);">Аналитика</button>
+    </div>
+    <div style="padding:16px 0;font-size:13px;color:var(--text-body);" id="tab-content">Показаны данные по серверам: 8 активных узлов, 2 предупреждения, 1 инцидент.</div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<section id="modal" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">15 — Диалоги</div>
+    <h2 class="section-title">Модальные окна</h2>
+  </div>
+
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Подтверждение действия</div>
+        <button class="modal-close">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:14px;color:var(--text-body);line-height:1.7;margin-bottom:16px;">Вы собираетесь остановить сервер <code style="background:var(--gray);padding:2px 6px;border-radius:var(--radius);font-family:monospace;font-size:12px;">srv-web-01</code>. Это действие приведёт к временной недоступности сервиса.</p>
+        <div class="alert alert-warning" style="margin-bottom:0;">
+          <div class="alert-icon">
+            <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 5 L29 27 L3 27 Z"/><line x1="16" y1="14" x2="16" y2="20"/></svg>
+          </div>
+          <div><div class="alert-body">На сервере запущено 4 активных соединения.</div></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm">Отмена</button>
+        <button class="btn btn-danger btn-sm">Остановить сервер</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMS (pattern) -->
+<section id="forms" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">16 — Паттерн · Формы</div>
+    <h2 class="section-title">Форма обратной связи</h2>
+    <p class="section-desc">Пример полной формы с обязательными полями, валидацией и правильной иерархией действий.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 400px;gap:2px;align-items:start;">
+    <div class="form-card">
+      <div style="font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px;">Обсудить проект</div>
+      <div style="font-size:13px;color:var(--neutral);margin-bottom:24px;">Ответим в течение 4 часов в рабочие дни</div>
+
+      <div class="form-row">
+        <div class="input-group">
+          <label class="input-label">Имя *</label>
+          <input type="text" placeholder="Иван Иванов">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Должность</label>
+          <input type="text" placeholder="CTO / ИТ-директор">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label class="input-label">Email *</label>
+          <input type="email" placeholder="ivan@company.ru">
+        </div>
+        <div class="input-group">
+          <label class="input-label">Телефон</label>
+          <input type="text" placeholder="+7 (___) ___-__-__">
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div class="input-group">
+          <label class="input-label">Компания *</label>
+          <input type="text" placeholder="ООО Ромашка">
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div class="input-group">
+          <label class="input-label">Тип услуги</label>
+          <select>
+            <option value="">Выберите направление...</option>
+            <option>Серверная инфраструктура</option>
+            <option>Кибербезопасность</option>
+            <option>Сетевые решения</option>
+            <option>Разработка ПО</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:0;">
+        <div class="input-group">
+          <label class="input-label">Описание задачи</label>
+          <textarea rows="4" placeholder="Что нужно сделать? Укажите сроки, бюджет и технические требования."></textarea>
+        </div>
+      </div>
+      <div class="form-footer">
+        <span style="font-size:11px;color:var(--neutral);align-self:center;">* — обязательные поля</span>
+        <button class="btn btn-secondary">Сбросить</button>
+        <button class="btn btn-primary">Отправить заявку →</button>
+      </div>
+    </div>
+
+    <!-- Info sidebar -->
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <div style="background:var(--navy);padding:28px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.16em;color:var(--cyan);text-transform:uppercase;margin-bottom:16px;">Что дальше?</div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;gap:12px;">
+            <div style="width:24px;height:24px;border-radius:var(--radius);background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white;flex-shrink:0;">1</div>
+            <div style="font-size:12px;color:var(--secondary);line-height:1.6;">Свяжемся с вами в течение <strong style="color:white;">4 часов</strong></div>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div style="width:24px;height:24px;border-radius:var(--radius);background:rgba(58,141,255,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white;flex-shrink:0;">2</div>
+            <div style="font-size:12px;color:var(--secondary);line-height:1.6;">Проведём бесплатный аудит текущей инфраструктуры</div>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div style="width:24px;height:24px;border-radius:var(--radius);background:rgba(58,141,255,0.15);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--secondary);flex-shrink:0;">3</div>
+            <div style="font-size:12px;color:var(--secondary);line-height:1.6;">Подготовим техническое предложение с фиксированными сроками</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--gray);padding:28px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.14em;color:var(--neutral);text-transform:uppercase;margin-bottom:16px;">Контакты</div>
+        <div style="font-size:12px;color:var(--text-body);line-height:2.2;">
+          <div><span style="color:var(--neutral);">Телефон:</span> <strong>+7 (800) 000-00-01</strong></div>
+          <div><span style="color:var(--neutral);">Email:</span> <span style="color:var(--blue);">hello@innovaciya-it.ru</span></div>
+          <div><span style="color:var(--neutral);">Поддержка:</span> <strong>24/7 · NOC</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VOICE -->
+<section id="voice" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">17 — Голос бренда</div>
+    <h2 class="section-title">Tone of Voice</h2>
+    <p class="section-desc">Технологии ИТ говорит как эксперт. Конкретно, по делу, без пустых слов и агрессивного маркетинга.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:40px;">
+    <div class="dodont">
+      <div class="do-block">
+        <div class="dodont-tag do">✓ Заголовок — так</div>
+        <div class="dodont-sample">Инфраструктура, которая не падает</div>
+        <div class="dodont-note">Конкретно, с выгодой, без клише</div>
+      </div>
+      <div class="dont-block">
+        <div class="dodont-tag dont">✗ Не так</div>
+        <div class="dodont-sample">Мы — лидеры в сфере инновационных ИТ-решений!</div>
+        <div class="dodont-note">Пусто, пафосно, ни о чём</div>
+      </div>
+    </div>
+    <div class="dodont">
+      <div class="do-block">
+        <div class="dodont-tag do">✓ CTA — так</div>
+        <div class="dodont-sample">Обсудить проект →</div>
+        <div class="dodont-note">Короткий, активный, без давления</div>
+      </div>
+      <div class="dont-block">
+        <div class="dodont-tag dont">✗ Не так</div>
+        <div class="dodont-sample">Получите БЕСПЛАТНУЮ консультацию СЕЙЧАС!!!</div>
+        <div class="dodont-note">Агрессивно, кричащее, спам-стиль</div>
+      </div>
+    </div>
+    <div class="dodont">
+      <div class="do-block">
+        <div class="dodont-tag do">✓ Описание услуги — так</div>
+        <div class="dodont-sample" style="font-size:14px;font-weight:400;line-height:1.6;">Проектируем и внедряем серверную инфраструктуру под нагрузку вашего бизнеса. SLA 99.9%. Поддержка 24/7.</div>
+        <div class="dodont-note">Факты, цифры, без воды</div>
+      </div>
+      <div class="dont-block">
+        <div class="dodont-tag dont">✗ Не так</div>
+        <div class="dodont-sample" style="font-size:14px;font-weight:400;line-height:1.6;color:var(--text-body);">Мы предлагаем широкий спектр комплексных ИТ-услуг высочайшего качества для вашего успешного бизнеса.</div>
+        <div class="dodont-note">Общие слова без смысла</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 principles -->
+  <div class="four-col">
+    <div style="background:var(--graphite);padding:24px;">
+      <div style="font-size:24px;font-weight:800;color:var(--blue);margin-bottom:10px;">Точно</div>
+      <div style="font-size:12px;color:var(--secondary);line-height:1.6;">Числа, факты, конкретные результаты. Не «быстро» — а «за 4 часа».</div>
+    </div>
+    <div style="background:var(--navy);padding:24px;">
+      <div style="font-size:24px;font-weight:800;color:var(--cyan);margin-bottom:10px;">Уверенно</div>
+      <div style="font-size:12px;color:var(--secondary);line-height:1.6;">Не «стараемся», а «делаем». Без заискивания.</div>
+    </div>
+    <div style="background:var(--graphite);padding:24px;">
+      <div style="font-size:24px;font-weight:800;color:var(--blue);margin-bottom:10px;">Кратко</div>
+      <div style="font-size:12px;color:var(--secondary);line-height:1.6;">Одно предложение вместо трёх. Заголовок до 7 слов.</div>
+    </div>
+    <div style="background:var(--navy);padding:24px;">
+      <div style="font-size:24px;font-weight:800;color:var(--cyan);margin-bottom:10px;">По-людски</div>
+      <div style="font-size:12px;color:var(--secondary);line-height:1.6;">«Мы настроим» вместо «будет произведена настройка».</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENS -->
+<section id="tokens" class="ds-section">
+  <div class="section-header">
+    <div class="section-label">18 — Дизайн-токены</div>
+    <h2 class="section-title">Справочник токенов</h2>
+    <p class="section-desc">Все значения для использования в CSS, Figma, коде. Нажмите «Копировать» чтобы скопировать значение.</p>
+  </div>
+
+  <div style="margin-bottom:32px;">
+    <div style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:12px;">Цветовые токены</div>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th>Токен</th>
+          <th>Превью</th>
+          <th>Значение</th>
+          <th>Применение</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="token-name">--graphite</td><td><div class="token-preview-box" style="background:#111315;"></div></td><td class="token-value">#111315</td><td style="font-size:12px;color:var(--text-body);">Основной фон, заголовки</td><td><button class="copy-btn" onclick="copyToken('#111315', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--navy</td><td><div class="token-preview-box" style="background:#141B2D;"></div></td><td class="token-value">#141B2D</td><td style="font-size:12px;color:var(--text-body);">Тёмный фон, секции</td><td><button class="copy-btn" onclick="copyToken('#141B2D', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--gray</td><td><div class="token-preview-box" style="background:#EEF1F4;"></div></td><td class="token-value">#EEF1F4</td><td style="font-size:12px;color:var(--text-body);">Фон страниц, разделители</td><td><button class="copy-btn" onclick="copyToken('#EEF1F4', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--blue</td><td><div class="token-preview-box" style="background:#3A8DFF;"></div></td><td class="token-value">#3A8DFF</td><td style="font-size:12px;color:var(--text-body);">Primary action, links</td><td><button class="copy-btn" onclick="copyToken('#3A8DFF', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--cyan</td><td><div class="token-preview-box" style="background:#42D9C8;"></div></td><td class="token-value">#42D9C8</td><td style="font-size:12px;color:var(--text-body);">Акцент на тёмном фоне</td><td><button class="copy-btn" onclick="copyToken('#42D9C8', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--secondary</td><td><div class="token-preview-box" style="background:#AEB7C4;"></div></td><td class="token-value">#AEB7C4</td><td style="font-size:12px;color:var(--text-body);">Вторичный текст на тёмном</td><td><button class="copy-btn" onclick="copyToken('#AEB7C4', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--neutral</td><td><div class="token-preview-box" style="background:#8A94A6;"></div></td><td class="token-value">#8A94A6</td><td style="font-size:12px;color:var(--text-body);">Мета-текст, плейсхолдеры</td><td><button class="copy-btn" onclick="copyToken('#8A94A6', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--green</td><td><div class="token-preview-box" style="background:#21B573;"></div></td><td class="token-value">#21B573</td><td style="font-size:12px;color:var(--text-body);">Success, статус «Готово»</td><td><button class="copy-btn" onclick="copyToken('#21B573', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--yellow</td><td><div class="token-preview-box" style="background:#FFB020;"></div></td><td class="token-value">#FFB020</td><td style="font-size:12px;color:var(--text-body);">Warning, «Внимание»</td><td><button class="copy-btn" onclick="copyToken('#FFB020', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--red</td><td><div class="token-preview-box" style="background:#E5484D;"></div></td><td class="token-value">#E5484D</td><td style="font-size:12px;color:var(--text-body);">Error, «Критично», Danger</td><td><button class="copy-btn" onclick="copyToken('#E5484D', this)">Копировать</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-bottom:32px;">
+    <div style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:12px;">Типографические токены</div>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th>Токен</th>
+          <th colspan="2">Значение</th>
+          <th>Применение</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="token-name">--font</td><td colspan="2" class="token-value">'Manrope', sans-serif</td><td style="font-size:12px;color:var(--text-body);">Основной шрифт</td><td><button class="copy-btn" onclick="copyToken('Manrope', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--font-alt</td><td colspan="2" class="token-value">'Geologica', sans-serif</td><td style="font-size:12px;color:var(--text-body);">Акцентные заголовки</td><td><button class="copy-btn" onclick="copyToken('Geologica', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">font-size-h1</td><td colspan="2" class="token-value">48px / 800 / −3% ls</td><td style="font-size:12px;color:var(--text-body);">H1 — главный заголовок</td><td><button class="copy-btn" onclick="copyToken('48px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">font-size-h2</td><td colspan="2" class="token-value">32px / 700 / −2% ls</td><td style="font-size:12px;color:var(--text-body);">H2 — секционный заголовок</td><td><button class="copy-btn" onclick="copyToken('32px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">font-size-body</td><td colspan="2" class="token-value">17px / 400 / lh 1.7</td><td style="font-size:12px;color:var(--text-body);">Основной текст</td><td><button class="copy-btn" onclick="copyToken('17px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">font-size-label</td><td colspan="2" class="token-value">11px / 700 / 14% ls / CAPS</td><td style="font-size:12px;color:var(--text-body);">Метки, категории, кнопки</td><td><button class="copy-btn" onclick="copyToken('11px', this)">Копировать</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <div style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:12px;">Пространственные и другие токены</div>
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th>Токен</th>
+          <th colspan="2">Значение</th>
+          <th>Применение</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="token-name">--radius</td><td colspan="2" class="token-value">2px</td><td style="font-size:12px;color:var(--text-body);">border-radius всех компонентов</td><td><button class="copy-btn" onclick="copyToken('2px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--gap-brand</td><td colspan="2" class="token-value">2px</td><td style="font-size:12px;color:var(--text-body);">Зазор между крупными блоками</td><td><button class="copy-btn" onclick="copyToken('2px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--space-section</td><td colspan="2" class="token-value">80px</td><td style="font-size:12px;color:var(--text-body);">Padding секций по вертикали</td><td><button class="copy-btn" onclick="copyToken('80px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--space-page-h</td><td colspan="2" class="token-value">64px</td><td style="font-size:12px;color:var(--text-body);">Боковые поля страницы</td><td><button class="copy-btn" onclick="copyToken('64px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--max-width</td><td colspan="2" class="token-value">1200px</td><td style="font-size:12px;color:var(--text-body);">Максимальная ширина контента</td><td><button class="copy-btn" onclick="copyToken('1200px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--icon-stroke</td><td colspan="2" class="token-value">1.5px round</td><td style="font-size:12px;color:var(--text-body);">Толщина линий иконок</td><td><button class="copy-btn" onclick="copyToken('1.5px', this)">Копировать</button></td></tr>
+        <tr><td class="token-name">--transition</td><td colspan="2" class="token-value">0.15s ease</td><td style="font-size:12px;color:var(--text-body);">CSS-переходы интерактивных эл.</td><td><button class="copy-btn" onclick="copyToken('0.15s ease', this)">Копировать</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+</main>
+
+<script>
+function copyColor(hex) {
+  navigator.clipboard.writeText(hex).catch(()=>{});
+}
+
+function copyToken(val, btn) {
+  navigator.clipboard.writeText(val).then(() => {
+    btn.textContent = '✓ Скопировано';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Копировать';
+      btn.classList.remove('copied');
+    }, 1800);
+  }).catch(()=>{});
+}
+
+const tabContent = ['Показаны данные по серверам: 8 активных узлов, 2 предупреждения, 1 инцидент.','Сетевая топология: 3 коммутатора, 2 маршрутизатора, аптайм 99.98%.','Безопасность: 0 критических инцидентов за 30 дней. Последний сканс — 12 мин. назад.','Аналитика: 4.2M запросов/сутки. Пиковая нагрузка — 17:00–19:00 по MSK.'];
+function setTab(el, idx) {
+  document.querySelectorAll('.tab-btn').forEach(b => { b.style.color = 'var(--neutral)'; b.style.borderBottomColor = 'transparent'; });
+  el.style.color = 'var(--blue)'; el.style.borderBottomColor = 'var(--blue)';
+  document.getElementById('tab-content').textContent = tabContent[idx];
+}
+
+// Sidebar active on scroll
+const sections = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('.sidebar-link');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.sidebar-link[href="#' + entry.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

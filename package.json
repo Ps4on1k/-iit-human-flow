@@ -1,0 +1,31 @@
+{
+  "name": "iit-human-flow",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=packages/backend",
+    "dev:frontend": "npm run dev --workspace=packages/frontend",
+    "build": "npm run build --workspaces",
+    "build:backend": "npm run build --workspace=packages/backend",
+    "build:frontend": "npm run build --workspace=packages/frontend",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test --workspaces",
+    "setup": "docker compose up -d && npm run db:migrate && npm run db:seed",
+    "db:migrate": "npx prisma migrate deploy --schema=packages/backend/prisma/schema.prisma",
+    "db:migrate:dev": "npx prisma migrate dev --schema=packages/backend/prisma/schema.prisma",
+    "db:seed": "npm run db:seed --workspace=packages/backend",
+    "db:generate": "npx prisma generate --schema=packages/backend/prisma/schema.prisma",
+    "db:reset": "npx prisma migrate reset --schema=packages/backend/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
