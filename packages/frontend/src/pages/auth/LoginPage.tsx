@@ -30,15 +30,15 @@ export function LoginPage() {
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: '100vh',
-      background: '#F4F5F7',
+      background: 'var(--ant-color-bg-layout, #F4F5F7)',
       fontFamily: "'Manrope', sans-serif",
     }}>
-      <Card style={{ width: 400, borderRadius: 2 }}>
+      <Card style={{ width: 400 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <svg viewBox="0 0 44 44" fill="none" width={40} height={40} style={{ marginBottom: 16 }}>
-            <line x1="22" y1="3" x2="22" y2="41" stroke="#2D3142" strokeWidth="4.5" strokeLinecap="butt"/>
-            <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="#2D3142" strokeWidth="4.5" strokeLinecap="butt"/>
-            <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="#2D3142" strokeWidth="4.5" strokeLinecap="butt"/>
+            <line x1="22" y1="3" x2="22" y2="41" stroke="#111315" strokeWidth="4.5" strokeLinecap="butt"/>
+            <line x1="38.5" y1="12.5" x2="5.5" y2="31.5" stroke="#111315" strokeWidth="4.5" strokeLinecap="butt"/>
+            <line x1="5.5" y1="12.5" x2="38.5" y2="31.5" stroke="#111315" strokeWidth="4.5" strokeLinecap="butt"/>
           </svg>
           <Typography.Title level={3} style={{ margin: 0 }}>Инновация ИТ</Typography.Title>
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>Human Flow — Система найма</Typography.Text>

@@ -15,11 +15,11 @@
     "typecheck": "npm run typecheck --workspaces",
     "test": "npm run test --workspaces",
     "setup": "docker compose up -d && npm run db:migrate && npm run db:seed",
-    "db:migrate": "npx prisma migrate deploy --schema=packages/backend/prisma/schema.prisma",
-    "db:migrate:dev": "npx prisma migrate dev --schema=packages/backend/prisma/schema.prisma",
+    "db:migrate": "npx prisma migrate deploy --schema=prisma/schema.prisma",
+    "db:migrate:dev": "npx prisma migrate dev --schema=prisma/schema.prisma",
     "db:seed": "npm run db:seed --workspace=packages/backend",
-    "db:generate": "npx prisma generate --schema=packages/backend/prisma/schema.prisma",
-    "db:reset": "npx prisma migrate reset --schema=packages/backend/prisma/schema.prisma"
+    "db:generate": "npx prisma generate --schema=prisma/schema.prisma",
+    "db:reset": "npx prisma migrate reset --schema=prisma/schema.prisma"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",

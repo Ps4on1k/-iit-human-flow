@@ -19,6 +19,8 @@ export function PipelinesPage() {
     try {
       const { data } = await pipelinesApi.list();
       setPipelines(data);
+    } catch {
+      message.error('Ошибка загрузки флоу');
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,7 @@ export function PipelinesPage() {
 
   const openStageForm = (stage?: any) => {
     setEditingStageId(stage?.id || null);
-    stageForm.setFieldsValue({ name: stage?.name || '', code: stage?.code || '', color: stage?.color || '#3A8DFF' });
+    stageForm.setFieldsValue({ name: stage?.name || '', code: stage?.code || '', color: stage?.color || 'var(--blue, #3A8DFF)' });
     if (!stage) stageForm.resetFields();
   };
 
@@ -116,12 +118,17 @@ export function PipelinesPage() {
     const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
     [sorted[idx], sorted[swapIdx]] = [sorted[swapIdx], sorted[idx]];
     const stageIds = sorted.map((s: any) => s.id);
+
+    // Optimistic update
+    const updatedStages = sorted.map((s: any, i: number) => ({ ...s, sortOrder: i }));
+    setSelectedPipeline({ ...selectedPipeline, stages: updatedStages });
+
     try {
       await pipelinesApi.reorderStages(selectedPipeline.id, stageIds);
-      const { data } = await pipelinesApi.get(selectedPipeline.id);
-      setSelectedPipeline(data);
+      message.success('Порядок сохранён');
     } catch (err: any) {
       message.error(err.response?.data?.message || 'Ошибка');
+      load();
     }
   };
 
@@ -227,8 +234,8 @@ export function PipelinesPage() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {selectedPipeline?.stages?.sort((a: any, b: any) => a.sortOrder - b.sortOrder).map((stage: any, idx: number) => (
-            <div key={stage.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', border: '1px solid #EEF1F4', borderRadius: 2 }}>
-              <div style={{ width: 12, height: 12, borderRadius: 2, background: stage.color || '#3A8DFF', flexShrink: 0 }} />
+            <div key={stage.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', border: '1px solid var(--ant-color-border-secondary, #EEF1F4)', borderRadius: 2 }}>
+              <div style={{ width: 12, height: 12, borderRadius: 2, background: stage.color || 'var(--blue, #3A8DFF)', flexShrink: 0 }} />
               <span style={{ fontWeight: 600, fontSize: 13, flex: 1 }}>{stage.name}</span>
               <Space size={4}>
                 <Button type="text" size="small" icon={<ArrowUpOutlined />} disabled={idx === 0} onClick={() => handleMoveStage(stage.id, 'up')} />

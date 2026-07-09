@@ -42,7 +42,7 @@ jobs:
         run: npm ci
 
       - name: Generate Prisma client
-        run: npx prisma generate --schema=packages/backend/prisma/schema.prisma
+        run: npx prisma generate --schema=prisma/schema.prisma
 
       - name: Build backend
         run: npm run build:backend

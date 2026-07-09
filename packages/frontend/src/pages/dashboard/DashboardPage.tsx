@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Row, Col, Statistic, Tabs, Typography } from 'antd';
+import { Card, Row, Col, Statistic, Tabs, Typography, message } from 'antd';
 const { Text } = Typography;
 import { TeamOutlined, FileTextOutlined, UserOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { dashboardApi } from '@/services/api';
@@ -36,7 +36,7 @@ function FunnelChart({ pipeline }: { pipeline: any }) {
                     </span>
                   )}
                 </div>
-                <Text style={{ fontSize: 11, marginTop: 4, display: 'block', color: '#8A94A6' }}>
+                <Text style={{ fontSize: 11, marginTop: 4, display: 'block', color: 'var(--neutral, #8A94A6)' }}>
                   {stage.name}
                 </Text>
               </div>
@@ -57,9 +57,9 @@ export function DashboardPage() {
   const [pipelineFunnels, setPipelineFunnels] = useState<any[]>([]);
 
   useEffect(() => {
-    dashboardApi.stats().then((r) => setStats(r.data));
-    dashboardApi.funnel().then((r) => setFunnel(r.data));
-    dashboardApi.pipelineFunnels().then((r) => setPipelineFunnels(r.data));
+    dashboardApi.stats().then((r) => setStats(r.data)).catch(() => message.error('Ошибка загрузки статистики'));
+    dashboardApi.funnel().then((r) => setFunnel(r.data)).catch(() => message.error('Ошибка загрузки воронки'));
+    dashboardApi.pipelineFunnels().then((r) => setPipelineFunnels(r.data)).catch(() => {});
   }, []);
 
   const totalHired = funnel.find((f) => f.status === 'hired')?.count || 0;
@@ -75,8 +75,8 @@ export function DashboardPage() {
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
-            <Statistic title="Открытые" value={stats?.openVacancies || 0} prefix={<TeamOutlined />} valueStyle={{ color: '#3A8DFF' }} />
+              <Card>
+            <Statistic title="Открытые" value={stats?.openVacancies || 0} prefix={<TeamOutlined />} valueStyle={{ color: 'var(--blue, #3A8DFF)' }} />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -86,7 +86,7 @@ export function DashboardPage() {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card>
-            <Statistic title="Наняты" value={totalHired} prefix={<CheckCircleOutlined />} valueStyle={{ color: '#21B573' }} />
+            <Statistic title="Наняты" value={totalHired} prefix={<CheckCircleOutlined />} valueStyle={{ color: 'var(--green, #21B573)' }} />
           </Card>
         </Col>
       </Row>
@@ -96,8 +96,8 @@ export function DashboardPage() {
           {funnel.sort((a, b) => b.count - a.count).map((item) => (
             <Col key={item.status} xs={8} sm={6} md={4} lg={3}>
               <Card size="small" style={{ textAlign: 'center' }}>
-                <Statistic value={item.count} valueStyle={{ fontSize: 20, color: item.count > 0 ? '#3A8DFF' : undefined }} />
-                <Text style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8A94A6' }}>
+                <Statistic value={item.count} valueStyle={{ fontSize: 20, color: item.count > 0 ? 'var(--blue, #3A8DFF)' : undefined }} />
+                <Text style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--neutral, #8A94A6)' }}>
                   {item.name}
                 </Text>
               </Card>
@@ -115,8 +115,8 @@ export function DashboardPage() {
               label: (
                 <span>
                   {pipeline.name}
-                  {pipeline.isDefault && <span style={{ fontSize: 10, color: '#3A8DFF', marginLeft: 4 }}>*</span>}
-                  <span style={{ fontSize: 11, color: '#8A94A6', marginLeft: 6 }}>({pipeline.totalCandidates})</span>
+                  {pipeline.isDefault && <span style={{ fontSize: 10, color: 'var(--blue, #3A8DFF)', marginLeft: 4 }}>*</span>}
+                  <span style={{ fontSize: 11, color: 'var(--neutral, #8A94A6)', marginLeft: 6 }}>({pipeline.totalCandidates})</span>
                 </span>
               ),
               children: <FunnelChart pipeline={pipeline} />,

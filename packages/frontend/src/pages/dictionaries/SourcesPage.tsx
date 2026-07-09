@@ -12,7 +12,9 @@ export function SourcesPage() {
 
   const load = async () => {
     setLoading(true);
-    try { const { data } = await sourcesApi.list(); setSources(data); } finally { setLoading(false); }
+    try { const { data } = await sourcesApi.list(); setSources(data); }
+    catch { message.error('Ошибка загрузки источников'); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => { load(); }, []);

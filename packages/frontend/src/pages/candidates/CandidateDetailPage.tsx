@@ -51,16 +51,18 @@ export function CandidateDetailPage() {
       loadVotes();
       loadUsers();
       loadInterviews();
+    } catch {
+      message.error('Ошибка загрузки кандидата');
     } finally { setLoading(false); }
   };
 
   const loadDefaultStages = () => setStages([
-    { code: 'new', name: 'Новый', color: '#8A94A6' },
-    { code: 'screening', name: 'Скрининг', color: '#3A8DFF' },
-    { code: 'interview', name: 'Собеседование', color: '#42D9C8' },
-    { code: 'offer', name: 'Оффер', color: '#FFB020' },
-    { code: 'hired', name: 'Нанят', color: '#21B573' },
-    { code: 'rejected', name: 'Отказ', color: '#E5484D' },
+    { code: 'new', name: 'Новый', color: 'var(--neutral, #8A94A6)' },
+    { code: 'screening', name: 'Скрининг', color: 'var(--blue, #3A8DFF)' },
+    { code: 'interview', name: 'Собеседование', color: 'var(--cyan, #42D9C8)' },
+    { code: 'offer', name: 'Оффер', color: 'var(--yellow, #FFB020)' },
+    { code: 'hired', name: 'Нанят', color: 'var(--green, #21B573)' },
+    { code: 'rejected', name: 'Отказ', color: 'var(--red, #E5484D)' },
   ]);
 
   const loadAttachments = useCallback(async () => {
@@ -90,9 +92,13 @@ export function CandidateDetailPage() {
 
   const handleStatusChange = async (status: string) => {
     if (!id) return;
-    await candidatesApi.updateStatus(id, status);
-    message.success('Статус обновлён');
-    load();
+    try {
+      await candidatesApi.updateStatus(id, status);
+      message.success('Статус обновлён');
+      load();
+    } catch {
+      message.error('Ошибка смены статуса');
+    }
   };
 
   const openEdit = () => {
@@ -106,17 +112,25 @@ export function CandidateDetailPage() {
 
   const handleEditSave = async (values: any) => {
     if (!id) return;
-    await candidatesApi.update(id, values);
-    message.success('Кандидат обновлён');
-    setEditMode(false);
-    load();
+    try {
+      await candidatesApi.update(id, values);
+      message.success('Кандидат обновлён');
+      setEditMode(false);
+      load();
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Ошибка сохранения');
+    }
   };
 
   const handleAddNote = async (values: { content: string }) => {
     if (!id) return;
-    await api.post(`/candidates/${id}/notes`, { content: values.content, context: noteContext });
-    noteForm.resetFields();
-    load();
+    try {
+      await api.post(`/candidates/${id}/notes`, { content: values.content, context: noteContext });
+      noteForm.resetFields();
+      load();
+    } catch {
+      message.error('Ошибка добавления заметки');
+    }
   };
 
   const handleUpload = async (info: any, context: string) => {
@@ -124,9 +138,13 @@ export function CandidateDetailPage() {
     const formData = new FormData();
     formData.append('file', info.file);
     formData.append('context', context);
-    await api.post(`/candidates/${id}/attachments`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-    loadAttachments();
-    load();
+    try {
+      await api.post(`/candidates/${id}/attachments`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      loadAttachments();
+      load();
+    } catch {
+      message.error('Ошибка загрузки файла');
+    }
   };
 
   const handleDownload = async (attachmentId: string, fileName: string) => {
@@ -147,25 +165,37 @@ export function CandidateDetailPage() {
 
   const handleDeleteNote = async (noteId: string) => {
     if (!id) return;
-    await api.delete(`/candidates/${id}/notes/${noteId}`);
-    load();
+    try {
+      await api.delete(`/candidates/${id}/notes/${noteId}`);
+      load();
+    } catch {
+      message.error('Ошибка удаления заметки');
+    }
   };
 
   const handleDeleteAttachment = async (attachmentId: string) => {
     if (!id) return;
-    await api.delete(`/candidates/${id}/attachments/${attachmentId}`);
-    loadAttachments();
-    load();
+    try {
+      await api.delete(`/candidates/${id}/attachments/${attachmentId}`);
+      loadAttachments();
+      load();
+    } catch {
+      message.error('Ошибка удаления файла');
+    }
   };
 
   const handleVote = async () => {
     if (!id || !selectedVote) return;
-    await votingApi.vote(id, selectedVote);
-    message.success('Голос учтён');
-    setVoteModal(false);
-    setSelectedVote('');
-    loadVotes();
-    load();
+    try {
+      await votingApi.vote(id, selectedVote);
+      message.success('Голос учтён');
+      setVoteModal(false);
+      setSelectedVote('');
+      loadVotes();
+      load();
+    } catch {
+      message.error('Ошибка голосования');
+    }
   };
 
   const handleAddInterviewer = async (userId: string) => {
@@ -227,7 +257,7 @@ export function CandidateDetailPage() {
           <Text strong>{title}</Text>
           <br />
           <Text type="secondary" style={{ fontSize: 12 }}>{log.user?.firstName} {log.user?.lastName} — {new Date(log.createdAt).toLocaleString('ru')}</Text>
-          {log.details && <div style={{ fontSize: 12, color: '#8A94A6', marginTop: 2 }}>{log.details}</div>}
+          {log.details && <div style={{ fontSize: 12, color: 'var(--neutral, #8A94A6)', marginTop: 2 }}>{log.details}</div>}
           {log.action === 'file_upload' && fileMatch && (
             <Button type="link" size="small" icon={<DownloadOutlined />}
               onClick={() => {
@@ -330,7 +360,7 @@ export function CandidateDetailPage() {
         {/* Stylish Horizontal Timeline */}
         <div ref={timelineRef} style={{
           display: 'flex', gap: 0, overflowX: 'auto', paddingBottom: 12, marginBottom: 16,
-          borderBottom: '1px solid #E8EBF0', scrollBehavior: 'smooth',
+          borderBottom: '1px solid var(--ant-color-border-secondary, #E8EBF0)', scrollBehavior: 'smooth',
         }}>
           {stages.map((stage, idx) => {
             const isActive = stage.code === candidate.status;
@@ -341,8 +371,8 @@ export function CandidateDetailPage() {
                   padding: '8px 20px', borderRadius: 16,
                   fontSize: 12, fontWeight: isActive ? 700 : 500,
                   background: isActive ? stage.color : isPast ? `${stage.color}20` : 'transparent',
-                  color: isActive ? '#fff' : isPast ? stage.color : '#AEB7C4',
-                  border: `1.5px solid ${isActive ? stage.color : isPast ? `${stage.color}40` : '#E8EBF0'}`,
+                  color: isActive ? '#fff' : isPast ? stage.color : 'var(--secondary, #AEB7C4)',
+                  border: `1.5px solid ${isActive ? stage.color : isPast ? `${stage.color}40` : 'var(--ant-color-border-secondary, #E8EBF0)'}`,
                   whiteSpace: 'nowrap', transition: 'all 0.25s ease',
                   cursor: 'default', boxShadow: isActive ? `0 2px 8px ${stage.color}40` : 'none',
                   transform: isActive ? 'scale(1.05)' : 'scale(1)',
@@ -352,7 +382,7 @@ export function CandidateDetailPage() {
                 {idx < stages.length - 1 && (
                   <div style={{
                     width: 32, height: 2,
-                    background: isPast ? stage.color : '#E8EBF0',
+                    background: isPast ? stage.color : 'var(--ant-color-border-secondary, #E8EBF0)',
                     flexShrink: 0, borderRadius: 1,
                     opacity: isPast ? 0.8 : 0.4,
                   }} />
@@ -396,6 +426,7 @@ export function CandidateDetailPage() {
                       style={{ minWidth: 300 }} placeholder="Добавить интервьюера"
                       showSearch optionFilterProp="label"
                       onChange={handleAddInterviewer}
+                      fieldNames={{ label: 'label', value: 'value' }}
                       options={allUsers
                         .filter((u) => !interviews.some((i) => i.interviewer?.id === u.id))
                         .map((u) => ({ value: u.id, label: `${u.firstName} ${u.lastName} (${u.role})` }))}
@@ -485,7 +516,7 @@ export function CandidateDetailPage() {
           {Object.entries(voteLabels).map(([value, label]) => (
             <Button key={value} size="large" type={selectedVote === value ? 'primary' : 'default'}
               onClick={() => setSelectedVote(value)}
-              style={{ borderColor: selectedVote === value ? undefined : '#D8DCE3', borderRadius: 8 }}>
+              style={{ borderColor: selectedVote === value ? undefined : 'var(--ant-color-border, #D8DCE3)', borderRadius: 8 }}>
               {voteIcons[value]} {label}
             </Button>
           ))}

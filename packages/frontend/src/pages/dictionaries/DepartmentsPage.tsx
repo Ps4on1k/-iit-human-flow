@@ -15,6 +15,8 @@ export function DepartmentsPage() {
     try {
       const { data } = await departmentsApi.list();
       setDepartments(data);
+    } catch {
+      message.error('Ошибка загрузки департаментов');
     } finally {
       setLoading(false);
     }

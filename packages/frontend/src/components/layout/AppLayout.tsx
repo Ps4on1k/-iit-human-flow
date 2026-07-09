@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layout, Menu, Badge, Avatar, Dropdown, Button, Switch, Typography } from 'antd';
+import { Layout, Menu, Avatar, Dropdown, Button, Switch, Typography } from 'antd';
 import {
   DashboardOutlined,
   TeamOutlined,
@@ -66,10 +66,10 @@ export function AppLayout() {
     },
   ];
 
-  const sidebarBg = isDark ? '#1a1d24' : '#2D3142';
+  const sidebarBg = isDark ? '#1a1d24' : '#111315';
   const headerBg = isDark ? '#14161c' : '#FFFFFF';
-  const bodyBg = isDark ? '#14161c' : '#F4F5F7';
-  const headerBorder = isDark ? '#262830' : '#E8EBF0';
+  const bodyBg = isDark ? '#14161c' : '#EEF1F4';
+  const headerBorder = isDark ? '#262830' : '#D8DCE3';
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -141,9 +141,7 @@ export function AppLayout() {
               checkedChildren={<MoonOutlined />}
               unCheckedChildren={<SunOutlined />}
             />
-            <Badge count={0} size="small">
-              <BellOutlined style={{ fontSize: 18 }} />
-            </Badge>
+            <Button type="text" icon={<BellOutlined style={{ fontSize: 18 }} />} />
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
               <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Avatar style={{ background: '#3A8DFF' }} icon={<UserOutlined />} />

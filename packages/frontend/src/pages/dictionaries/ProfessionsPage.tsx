@@ -15,6 +15,8 @@ export function ProfessionsPage() {
     try {
       const { data } = await professionsApi.list();
       setProfessions(data);
+    } catch {
+      message.error('Ошибка загрузки профессий');
     } finally {
       setLoading(false);
     }

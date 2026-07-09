@@ -17,7 +17,9 @@ export function TagsPage() {
 
   const load = async () => {
     setLoading(true);
-    try { const { data } = await tagsApi.list(); setTags(data); } finally { setLoading(false); }
+    try { const { data } = await tagsApi.list(); setTags(data); }
+    catch { message.error('Ошибка загрузки тегов'); }
+    finally { setLoading(false); }
   };
 
   const loadUsers = async () => {
@@ -66,7 +68,7 @@ export function TagsPage() {
     {
       title: 'Тег', key: 'tag',
       render: (_: any, record: any) => (
-        <Tag color={record.color || '#3A8DFF'} style={{ borderRadius: 2, fontWeight: 600 }}>{record.name}</Tag>
+        <Tag color={record.color || 'var(--blue, #3A8DFF)'} style={{ borderRadius: 2, fontWeight: 600 }}>{record.name}</Tag>
       ),
     },
     { title: 'Вакансий', key: 'vacancies', render: (_: any, r: any) => r._count?.vacancyTags || 0 },
@@ -110,7 +112,7 @@ export function TagsPage() {
       </Modal>
 
       <Modal title={`Видимость: ${selectedTag?.name || ''}`} open={visibilityModal} onCancel={() => setVisibilityModal(false)} onOk={() => visForm.submit()} okText="Сохранить" cancelText="Отмена" width={600}>
-        <div style={{ marginBottom: 12, fontSize: 12, color: '#8A94A6' }}>
+        <div style={{ marginBottom: 12, fontSize: 12, color: 'var(--neutral, #8A94A6)' }}>
           Выберите пользователей, которые будут видеть этот тег. Если список пуст — тег видят все.
         </div>
         <Form form={visForm} layout="vertical" onFinish={handleVisibilitySave}>

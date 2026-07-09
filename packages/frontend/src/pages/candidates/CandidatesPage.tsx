@@ -47,7 +47,9 @@ export function CandidatesPage() {
     try {
       const { data } = await vacanciesApi.list();
       setVacancies(data);
-    } catch {}
+    } catch {
+      message.error('Ошибка загрузки вакансий');
+    }
   };
 
   const loadCandidates = async () => {
@@ -56,15 +58,16 @@ export function CandidatesPage() {
       if (selectedVacancy) {
         const { data } = await candidatesApi.list(selectedVacancy, selectedStatus);
         setCandidates(data);
-      } else {
-        const results: any[] = [];
-        for (const v of vacancies) {
-          try {
-            const { data } = await candidatesApi.list(v.id, selectedStatus);
-            results.push(...data.map((c: any) => ({ ...c, vacancyTitle: v.title })));
-          } catch {}
-        }
-        setCandidates(results);
+      } else if (vacancies.length > 0) {
+        const results = await Promise.all(
+          vacancies.map(async (v) => {
+            try {
+              const { data } = await candidatesApi.list(v.id, selectedStatus);
+              return data.map((c: any) => ({ ...c, vacancyTitle: v.title }));
+            } catch { return []; }
+          })
+        );
+        setCandidates(results.flat());
       }
     } finally {
       setLoading(false);

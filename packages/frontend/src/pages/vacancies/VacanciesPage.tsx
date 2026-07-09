@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Tag, Modal, Form, Input, Select, Button, Typography } from 'antd';
+import { Table, Tag, Modal, Form, Input, Select, Button, Typography, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { vacanciesApi, departmentsApi, pipelinesApi } from '@/services/api';
@@ -50,6 +50,8 @@ export function VacanciesPage() {
     try {
       const { data } = await vacanciesApi.list();
       setVacancies(data);
+    } catch {
+      message.error('Ошибка загрузки вакансий');
     } finally {
       setLoading(false);
     }
@@ -62,10 +64,14 @@ export function VacanciesPage() {
   }, []);
 
   const handleCreate = async (values: any) => {
-    await vacanciesApi.create(values);
-    setModalOpen(false);
-    form.resetFields();
-    load();
+    try {
+      await vacanciesApi.create(values);
+      setModalOpen(false);
+      form.resetFields();
+      load();
+    } catch (err: any) {
+      message.error(err.response?.data?.message || 'Ошибка создания вакансии');
+    }
   };
 
   const columns = [
@@ -120,9 +126,9 @@ export function VacanciesPage() {
       key: 'tags',
       render: (_: any, record: any) => (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-          {record.tags?.map((vt: any) => (
-            <Tag key={vt.tag?.id} color={vt.tag?.color || '#3A8DFF'} style={{ borderRadius: 2, fontSize: 10 }}>
-              {vt.tag?.name}
+          {(record.tags || []).filter((vt: any) => vt.tag).map((vt: any) => (
+            <Tag key={vt.tag.id} color={vt.tag.color || 'var(--blue, #3A8DFF)'} style={{ borderRadius: 2, fontSize: 10 }}>
+              {vt.tag.name}
             </Tag>
           ))}
         </div>

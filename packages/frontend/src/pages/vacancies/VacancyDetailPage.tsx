@@ -43,16 +43,18 @@ export function VacancyDetailPage() {
           setStages(pipeline.stages.sort((a: any, b: any) => a.sortOrder - b.sortOrder));
         } catch { loadDefaultStages(); }
       } else { loadDefaultStages(); }
+    } catch {
+      message.error('Ошибка загрузки вакансии');
     } finally { setLoading(false); }
   };
 
   const loadDefaultStages = () => setStages([
-    { code: 'new', name: 'Новый', color: '#8A94A6' },
-    { code: 'screening', name: 'Скрининг', color: '#3A8DFF' },
-    { code: 'interview', name: 'Собеседование', color: '#42D9C8' },
-    { code: 'offer', name: 'Оффер', color: '#FFB020' },
-    { code: 'hired', name: 'Нанят', color: '#21B573' },
-    { code: 'rejected', name: 'Отказ', color: '#E5484D' },
+    { code: 'new', name: 'Новый', color: 'var(--neutral, #8A94A6)' },
+    { code: 'screening', name: 'Скрининг', color: 'var(--blue, #3A8DFF)' },
+    { code: 'interview', name: 'Собеседование', color: 'var(--cyan, #42D9C8)' },
+    { code: 'offer', name: 'Оффер', color: 'var(--yellow, #FFB020)' },
+    { code: 'hired', name: 'Нанят', color: 'var(--green, #21B573)' },
+    { code: 'rejected', name: 'Отказ', color: 'var(--red, #E5484D)' },
   ]);
 
   useEffect(() => {
@@ -121,17 +123,22 @@ export function VacancyDetailPage() {
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <Select style={{ width: 160 }} value={vacancy.status}
-              onChange={async (val) => { await vacanciesApi.updateStatus(vacancy.id, val); load(); }}
+              onChange={async (val) => {
+                try {
+                  await vacanciesApi.updateStatus(vacancy.id, val);
+                  load();
+                } catch { message.error('Ошибка смены статуса'); }
+              }}
               options={Object.entries(vacancyStatusLabels).map(([v, l]) => ({ value: v, label: l }))} />
             <Button icon={<TagsOutlined />} onClick={() => setTagModal(true)}>Теги</Button>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate(`/vacancies/${id}`)}>Добавить</Button>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/candidates')}>Добавить кандидата</Button>
           </div>
         </div>
 
         {vacancy.tags?.length > 0 && (
           <div style={{ marginBottom: 16 }}>
-            {vacancy.tags.map((vt: any) => (
-              <Tag key={vt.tag?.id} color={vt.tag?.color || '#3A8DFF'} style={{ borderRadius: 2 }}>{vt.tag?.name}</Tag>
+            {vacancy.tags.filter((vt: any) => vt.tag).map((vt: any) => (
+              <Tag key={vt.tag.id} color={vt.tag.color || 'var(--blue, #3A8DFF)'} style={{ borderRadius: 2 }}>{vt.tag.name}</Tag>
             ))}
           </div>
         )}
@@ -162,7 +169,7 @@ export function VacancyDetailPage() {
               key: stage.code,
               label: (
                 <span>
-                  <Badge count={stageCandidates.length} style={{ backgroundColor: stage.color || '#3A8DFF' }} />
+                  <Badge count={stageCandidates.length} style={{ backgroundColor: stage.color || 'var(--blue, #3A8DFF)' }} />
                   <span style={{ marginLeft: 8 }}>{stage.name}</span>
                 </span>
               ),

@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Table, Button, Tag, Modal, Form, Input, Select, message, Popconfirm, Transfer, Space } from 'antd';
+import { Table, Button, Tag, Modal, Form, Input, Select, message, Popconfirm, Transfer, Space, Typography } from 'antd';
 import { PlusOutlined, DeleteOutlined, TagsOutlined } from '@ant-design/icons';
 import api from '@/services/api';
 import { tagsApi } from '@/services/api';
 
 const roleColors: Record<string, string> = {
-  ADMIN: '#2D3142',
-  RECRUITER: '#3A8DFF',
-  HIRING_MANAGER: '#42D9C8',
-  HR: '#21B573',
+  ADMIN: 'var(--graphite, #111315)',
+  RECRUITER: 'var(--blue, #3A8DFF)',
+  HIRING_MANAGER: 'var(--cyan, #42D9C8)',
+  HR: 'var(--green, #21B573)',
 };
 
 const roleLabels: Record<string, string> = {
@@ -32,7 +32,6 @@ export function UsersPage() {
     setLoading(true);
     try {
       const { data } = await api.get('/users');
-      // Load tags for each user
       const usersWithTags = await Promise.all(
         data.map(async (u: any) => {
           try {
@@ -44,6 +43,8 @@ export function UsersPage() {
         })
       );
       setUsers(usersWithTags);
+    } catch {
+      message.error('Ошибка загрузки пользователей');
     } finally {
       setLoading(false);
     }
@@ -123,7 +124,7 @@ export function UsersPage() {
       dataIndex: 'isActive',
       key: 'isActive',
       render: (active: boolean) => (
-        <Tag color={active ? '#21B573' : '#E5484D'} style={{ borderRadius: 2 }}>
+        <Tag color={active ? 'var(--green, #21B573)' : 'var(--red, #E5484D)'} style={{ borderRadius: 2 }}>
           {active ? 'Активен' : 'Неактивен'}
         </Tag>
       ),
@@ -132,11 +133,11 @@ export function UsersPage() {
       title: 'Теги',
       key: 'tags',
       render: (_: any, record: any) => {
-        const userTags = record.userTags?.map((ut: any) => ut.tag) || [];
+        const userTags = record.userTags?.map((ut: any) => ut.tag).filter(Boolean) || [];
         return (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {userTags.map((tag: any) => (
-              <Tag key={tag.id} color={tag.color || '#3A8DFF'} style={{ borderRadius: 2, fontSize: 10 }}>
+              <Tag key={tag.id} color={tag.color || 'var(--blue, #3A8DFF)'} style={{ borderRadius: 2, fontSize: 10 }}>
                 {tag.name}
               </Tag>
             ))}
@@ -171,8 +172,8 @@ export function UsersPage() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 32 }}>
         <div>
-          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#8A94A6' }}>АДМИНИСТРИРОВАНИЕ</span>
-          <h2 style={{ margin: '8px 0 0', fontSize: 24, fontWeight: 700 }}>Пользователи</h2>
+          <Typography.Text type="secondary" style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase' }}>АДМИНИСТРИРОВАНИЕ</Typography.Text>
+          <Typography.Title level={2} style={{ margin: '8px 0 0' }}>Пользователи</Typography.Title>
         </div>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>Создать</Button>
       </div>
@@ -205,7 +206,7 @@ export function UsersPage() {
         cancelText="Отмена"
         width={600}
       >
-        <div style={{ marginBottom: 8, fontSize: 12, color: '#8A94A6' }}>
+        <div style={{ marginBottom: 8, fontSize: 12, color: 'var(--neutral, #8A94A6)' }}>
           Перенесите теги в правую колонку, чтобы назначить их пользователю.
         </div>
         <Transfer
