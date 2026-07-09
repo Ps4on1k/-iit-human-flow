@@ -1,6 +1,3 @@
--- Add context to candidate_notes
-ALTER TABLE "candidate_notes" ADD COLUMN "context" TEXT NOT NULL DEFAULT 'general';
-
 -- Add interview_id to attachments
 ALTER TABLE "attachments" ADD COLUMN "interview_id" TEXT;
 
