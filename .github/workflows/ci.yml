@@ -76,13 +76,19 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/iit-human-flow
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set lowercase owner
+        run: echo "IMAGE_PREFIX=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/iit-human-flow" >> "$GITHUB_ENV"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -96,8 +102,8 @@ jobs:
           file: docker/Dockerfile.backend
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/iit-human-flow-backend:latest
-            ghcr.io/${{ github.repository_owner }}/iit-human-flow-backend:${{ github.sha }}
+            ${{ env.IMAGE_PREFIX }}-backend:latest
+            ${{ env.IMAGE_PREFIX }}-backend:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -108,7 +114,7 @@ jobs:
           file: docker/Dockerfile.frontend
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/iit-human-flow-frontend:latest
-            ghcr.io/${{ github.repository_owner }}/iit-human-flow-frontend:${{ github.sha }}
+            ${{ env.IMAGE_PREFIX }}-frontend:latest
+            ${{ env.IMAGE_PREFIX }}-frontend:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
